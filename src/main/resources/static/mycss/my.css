@@ -1,0 +1,84 @@
+.media-object{
+    height: 38px;
+    width:38px;
+}
+
+.media-objecta{
+    width:50px;
+}
+
+.img-a{
+    max-height: 500px;
+}
+
+.comment-a{
+    height: 50px;
+}
+
+.give-height{
+    height: 30px;
+}
+
+.panel-my{
+    margin-bottom: 15px;
+}
+
+.panel-myb{
+    padding: 10px;
+}
+
+.img-b{
+    width: 130px;
+}
+
+.gly-herA{
+    color: #00a1d6;
+}
+
+.gly-com{
+    color: #499ef3;
+}
+
+.gly-coma{
+    color: grey;
+}
+
+.gly-ic{
+    color: #f0ad4e;
+}
+
+.gly-ica{
+    color: grey;
+}
+
+.ic-del{
+    color: grey;
+}
+
+.ic-dela{
+    color: grey;
+}
+
+.notice{
+    background-color: #47a580;
+}
+
+.ic-notice{
+    color: #47a580;
+}
+
+.media-mt{
+    padding-top: 5px;
+}
+
+.media-lea{
+    width: 44px;
+    height: 44px;
+}
+
+.panel-myc{
+    padding-bottom: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-left: 10px;
+}

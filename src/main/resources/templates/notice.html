@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>我的消息</title>
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="../mycss/my.css" rel="stylesheet">
+    <script src="../vue.js" type="text/javascript" charset="utf-8"></script>
+
+    <style type="text/css">
+        body {
+
+            /*background-repeat: no-repeat;*/
+
+            /*background-position: center center #2D0F0F;*/
+
+            background-color: #f0f0f0;
+
+            background-image: url(/room/背景7.jpeg);
+
+            background-size: 100%;
+
+            /*background-size: cover;*/
+
+            background-attachment: fixed;
+
+        }
+
+        a {
+            color: grey;
+        }
+
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">木禾空间</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li th:if="${session.sessionUser != null}"><a href="/"><span class="glyphicon glyphicon-user"
+                                                                             aria-hidden="true"></span> 个人空间</a>
+                </li>
+                <li><a
+                        th:href="'/room?author='+${session.sessionUser.username}"><span class="glyphicon glyphicon-home"
+                                                                                        aria-hidden="true"></span> 我的主页</a>
+                </li>
+                <li th:if="${session.sessionUser != null}"><a href="/friend"><span
+                        class="glyphicon glyphicon-tree-deciduous" aria-hidden="true"></span> 好友</a></li>
+                <li><a href="/publicRoom"><span class="glyphicon glyphicon-leaf" aria-hidden="true"></span> 公共圈</a></li>
+            </ul>
+            <form class="navbar-form navbar-left" action="/search">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="seaText" placeholder="账号、昵称">
+                </div>
+                <button type="submit" class="btn btn-default">查找</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="hidden-sm hidden-xs"><a href="/play"><span class="glyphicon glyphicon-ice-lolly-tasted" aria-hidden="true"></span> 娱乐</a></li>
+                <!--消息通知图标-->
+                <li class="active"><a href="/notice">
+                    <span class="glyphicon glyphicon-bell" aria-hidden="true" id="ic_notice"></span>
+                    <span class="badge" id="notice">0</span>
+                </a></li>
+                <li th:if="${session.sessionUser == null}"><a href="/go">登录</a></li>
+                <li class="dropdown" th:if="${session.sessionUser != null}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">[[${session.sessionUser.name}]] <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <!--                        <li role="separator" class="divider"></li>-->
+                        <li><a href="/logout" style="color: #00a1d6"><span class="glyphicon glyphicon-log-out"
+                                                                           aria-hidden="true"></span> 退出登录</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<br><br><br><br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="panel panel-primary">
+                <div class="panel-heading">我的消息</div>
+            </div>
+            <div id="app">
+                <div class="panel panel-warning" v-for="comm in comment">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-10 col-xs-9">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <!------评论者头像------>
+                                        <a href="#">
+                                            <img class="media-object img-rounded" :src="comm.u_url"
+                                                 alt="">
+                                        </a>
+                                    </div>
+                                    <div class="media-body">
+                                        <a :href="'/room?author='+comm.user_id">{{comm.name}}</a>
+                                        <span v-if="comm.c_type == 1"> 评论了你 :</span>
+                                        <span v-else-if="comm.c_type == 2"> 回复了你 :</span>
+                                        <span v-else-if="comm.c_type == 3"> 关注了你 </span>
+                                        <span v-else-if="comm.c_type == 4"> 取消关注 </span>
+                                        <span v-else-if="comm.c_type == 5">
+                                            <template v-if="comm.or_read == 0">
+                                            <a :href="'/lifeHtml?l_id='+comm.to_life_id"
+                                               :data-id="comm.c_id"
+                                               style="color: #333"
+                                               onclick="setNotic(this)"> 赞了你 </a>
+                                            </template>
+
+                                            <template v-else>
+                                            <a :href="'/lifeHtml?l_id='+comm.to_life_id"
+                                               :data-id="comm.c_id"
+                                               style="color: #333"
+                                               data-s="b"
+                                               onclick="setNotic(this)"> 赞了你 </a>
+                                            </template>
+
+                                        </span>
+                                        <span v-else-if="comm.c_type == 7"> 给你留言 </span>
+                                        <span v-else-if="comm.c_type == 8"> 回复你的留言 </span>
+                                        <template v-if="comm.c_type == 1 || comm.c_type == 2">
+                                            <template v-if="comm.or_read == 0">
+                                                <a :href="'/lifeHtml?l_id='+comm.to_life_id" :data-id="comm.c_id"
+                                                   onclick="setNotic(this)"> {{comm.c_text}} </a>
+                                            </template>
+                                            <template v-else>
+                                                <a :href="'/lifeHtml?l_id='+comm.to_life_id" :data-id="comm.c_id"
+                                                   data-s="b"
+                                                   onclick="setNotic(this)"> {{comm.c_text}} </a>
+                                            </template>
+                                        </template>
+                                        <template v-if="comm.c_type == 7">
+                                            <template v-if="comm.or_read == 0">
+                                                <a :href="'/room?author='+comm.to_user_id" :data-id="comm.c_id"
+                                                   onclick="setNotic(this)"> {{comm.c_text}} </a>
+                                            </template>
+                                            <template v-else>
+                                                <a :href="'/room?author='+comm.to_user_id" :data-id="comm.c_id"
+                                                   data-s="b"
+                                                   onclick="setNotic(this)"> {{comm.c_text}} </a>
+                                            </template>
+                                        </template>
+                                        <template v-if="comm.c_type == 8">
+                                            <template v-if="comm.or_read == 0">
+                                                <a :data-id="comm.c_id" onclick="setNotic(this)"> {{comm.c_text}} </a>
+                                            </template>
+                                            <template v-else>
+                                                <a :data-id="comm.c_id" data-s="b" onclick="setNotic(this)">
+                                                    {{comm.c_text}} </a>
+                                            </template>
+                                        </template>
+                                        <br>
+                                        {{comm.c_time}} &nbsp;<span class="label label-danger" v-if="comm.or_read == 0"
+                                                                    :data-id="comm.c_id" :id="comm.c_id"
+
+                                                                    onclick="setNotic(this)">未读</span>
+                                        <span class="label label-default" v-else :id="comm.c_id"
+                                              :data-id="comm.c_id"
+                                              data-s="a"
+                                              onclick="setNotic(this)">已读</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<div class="col-md-2 col-xs-3">
+                                <span v-if="comm.or_read == 0">
+                                    <button type="button" class="btn btn-success" :data-id="comm.c_id" :id="comm.c_id"
+                                            onclick="setRead(this)">未读</button>
+                                </span>
+                                <span v-else>
+                                    <button type="button" class="btn btn-default" :id="comm.c_id"
+                                            onclick="setNotRead(this)">已读</button>
+                                </span>
+                            </div>-->
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="panel panel-default">
+                    <div class="panel-heading" @click="getMoreNot">点击查看更多消息</div>
+                </div>-->
+                <div class="alert alert-danger" role="alert" v-if="or_true">没有消息啦</div>
+                <button type="button" class="btn btn-info btn-block" @click="getMoreNot" v-else>点击查看更多消息</button>
+                <br>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>
+
+<script src="../bootstrap/jquery.min.js"></script>
+<script src="../bootstrap/js/bootstrap.min.js"></script>
+<script src="../mycss/my.js"></script>
+
+<script type="text/javascript">
+    var username = [[${session.sessionUser.username}]];
+    var page = 1;
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            comment: [],
+            usernameid: username,
+            or_true: false
+        },
+        created: function () {
+            var that = this;
+
+            $.ajax({
+                type: "get",
+                url: "/getNotice",
+                data: {
+                    "to_user_id": username,
+                    "page": 0
+                },
+                success: function (msg) {
+                    var obj1 = JSON.parse(msg);
+                    if (obj1.length < 14) {
+                        that.or_true = true;
+                    }
+                    that.comment = obj1;
+                },
+                error: function (msg) {
+                    alert(msg);
+                    alert("请求失败");
+                }
+            });
+            inqNoticeNotRead();
+        },
+        methods: {
+
+            getMoreNot: function () {
+                var that = this;
+
+                $.ajax({
+                    type: "get",
+                    url: "/getNotice",
+                    data: {
+                        "to_user_id": username,
+                        "page": page
+                    },
+                    success: function (msg) {
+                        var obj = JSON.parse(msg);
+                        if (obj.length === 0) {
+                            // alert("没有更多动态啦！");
+                            that.or_true = true;
+                            return;
+                        }
+                        if (obj.length < 14) {
+                            that.or_true = true;
+                        }
+                        for (var i = 0; i < obj.length; i++) {
+                            that.comment.push(obj[i]);
+                        }
+                        page++;
+                    },
+                    error: function (msg) {
+                        alert(msg);
+                        alert("请求失败");
+                    }
+                });
+            }
+        }
+
+
+    });
+</script>
+</body>
+</html>

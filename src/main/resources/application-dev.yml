@@ -1,0 +1,30 @@
+server:
+  port: 8886
+
+web:
+  upload-path: D:/room/image
+
+mydata:
+  patha: D:/room/image
+  pathb: D:/room/life
+
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/room?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=GMT%2b8
+    driver-class-name: com.mysql.jdbc.Driver
+  thymeleaf:
+    cache: false
+
+mybatis:
+  mapper-locations: classpath:mapping/*Mapper.xml
+  type-aliases-package: com.room.entity
+
+#showSql
+logging:
+  level:
+    com:
+      example:
+        mapper : debug
+

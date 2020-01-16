@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>主页</title>
+
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="../mycss/my.css" rel="stylesheet">
+
+    <script src="../vue.js" type="text/javascript" charset="utf-8"></script>
+
+    <style type="text/css">
+        body {
+
+            /*background-repeat: no-repeat;*/
+
+            /*background-position: center center #2D0F0F;*/
+
+            background-color: #f0f0f0;
+
+            background-image: url(/room/背景7.jpeg);
+
+            background-size: 100%;
+
+            /*background-size: cover;*/
+
+            background-attachment: fixed;
+
+        }
+
+        #myBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: #808080bd;
+            color: white;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        #myBtn:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+<!--导航栏-->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">木禾空间</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li th:if="${session.sessionUser != null}"><a href="/"><span class="glyphicon glyphicon-user"
+                                                                             aria-hidden="true"></span> 个人空间</a>
+                </li>
+                <li class="active" th:if="${session.sessionUser.username == author}"><a style="color: #00a1d6"
+                                                                                        th:href="'/room?author='+${session.sessionUser.username}"><span
+                        class="glyphicon glyphicon-home" aria-hidden="true"></span> 我的主页</a></li>
+                <li th:if="${session.sessionUser.username != author}"><a
+                        th:href="'/room?author='+${session.sessionUser.username}"><span class="glyphicon glyphicon-home"
+                                                                                        aria-hidden="true"></span> 我的主页</a>
+                </li>
+                <li th:if="${session.sessionUser != null}"><a href="/friend"><span
+                        class="glyphicon glyphicon-tree-deciduous" aria-hidden="true"></span> 好友</a></li>
+                <li><a href="/publicRoom"><span class="glyphicon glyphicon-leaf" aria-hidden="true"></span> 公共圈</a></li>
+            </ul>
+            <form class="navbar-form navbar-left" action="/search">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="seaText" placeholder="账号、昵称">
+                </div>
+                <button type="submit" class="btn btn-default">查找</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="hidden-sm hidden-xs"><a href="/play"><span class="glyphicon glyphicon-ice-lolly-tasted"
+                                                                      aria-hidden="true"></span> 娱乐</a></li>
+                <li><a href="/notice">
+                    <span class="glyphicon glyphicon-bell" aria-hidden="true" id="ic_notice"></span>
+                    <span class="badge" id="notice">0</span>
+                </a></li>
+                <li th:if="${session.sessionUser == null}"><a href="/go">登录</a></li>
+                <li class="dropdown" th:if="${session.sessionUser != null}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">[[${session.sessionUser.name}]] <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <!--                        <li role="separator" class="divider"></li>-->
+                        <li><a href="/logout" style="color: #00a1d6"><span class="glyphicon glyphicon-log-out"
+                                                                           aria-hidden="true"></span> 退出登录</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--个人资料展示-->
+<br><br><br>
+<!--<div class="container"> &lt;!&ndash;style="background-image: url()"&ndash;&gt;
+
+
+</div>-->
+<!--主体-->
+<div class="container" id="app">
+    <div class="row">
+        <div class="col-md-10 col-xs-8">
+            <div class="media">
+                <div class="media-left">
+                    <a href="">
+                        <img class="img-rounded img-b" src="" id="imga">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <br>
+                    <h3 class="media-heading" id="name" style="color: #e9d332"></h3>
+                    &nbsp;<h4 id="room_name" style="color: #204d74 "></h4>
+                    <h5 id="room_mood" style="color: #337ab7"></h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-xs-4" th:if="${session.sessionUser.username != author}">
+            <br><br><br>
+            <div v-if="getOrFriend()">
+                <template v-for="friend in friends" v-if="friend.f_friend_id == authorid">
+                    <button type="button" class="btn btn-block " :id="'f_'+friend.f_id" :data-id="friend.f_id"
+                            :data-friend_id="friend.f_friend_id" data-s="a" onclick="friend(this)">已关注
+                    </button>
+                </template>
+            </div>
+            <div v-if="!getOrFriend()">
+                <button type="button" class="btn btn-block btn-info" :id="'f_'+authorid"
+                        :data-id="authorid" :data-friend_id="authorid" data-s="b" onclick="friend(this)">关注
+                </button>
+            </div>
+
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <ul class="nav nav-pills" v-show="home">
+                <!--<li role="presentation" class="active"><a id="homeHref" :href="'/room?author='+authorid">主页</a></li>
+                <li role="presentation"><a href="" id="leaveHref">留言板</a></li>
+                <li role="presentation"><a :href="'/perData?user_id='+authorid" id="perHref">个人档</a></li>-->
+                <li role="presentation" class="active"><a @click="isHome()">主页</a></li>
+                <li role="presentation"><a @click="isPerDa()">个人档</a></li>
+                <li role="presentation"><a @click="isLeaW()">留言板</a></li>
+            </ul>
+            <ul class="nav nav-pills" v-show="perDa">
+                <li role="presentation"><a @click="isHome()">主页</a></li>
+                <li role="presentation" class="active"><a @click="isPerDa()">个人档</a></li>
+                <li role="presentation"><a @click="isLeaW()">留言板</a></li>
+            </ul>
+            <ul class="nav nav-pills" v-show="leaW">
+                <li role="presentation"><a @click="isHome()">主页</a></li>
+                <li role="presentation"><a @click="isPerDa()">个人档</a></li>
+                <li role="presentation" class="active"><a @click="isLeaW()">留言板</a></li>
+            </ul>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    <!--从这里开始切换页面-->
+    <div class="row" v-show="home">
+        <button onclick="topFunction()" id="myBtn" title="返回顶部"><span class="glyphicon glyphicon-chevron-up"
+                                                                      aria-hidden="true"></span></button>
+        <div class="col-md-1"></div>
+        <!--访客功能预留-->
+        <div class="col-md-3">
+            <br>
+            <div class="panel panel-default">
+
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-5 col-xs-4">访客</div>
+                        <div class="col-md-7 col-xs-8">总浏览数 : <span id="visc"></span></div>
+                    </div>
+                </div>
+                <div class="panel-body panel-myb" v-for="vis in myVisitor">
+                    <div class="media">
+                        <div class="media-left">
+                            <!------头像------>
+                            <a :href="vis.u_url">
+                                <img class="media-object img-rounded" :src="vis.u_url">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <!------昵称------>
+                            <a :href="'/room?author='+vis.v_visitor">{{vis.name}}</a><br>
+                            {{vis.v_time}}
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" v-if="havaVis">
+                    <button type="button" class="btn btn-info btn-block" @click="getMoreVisitor">点击查看更多访客</button>
+                </div>
+                <div class="panel-footer" v-else>
+                    没有访客啦
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <br>
+            <div class="panel panel-success panel-my">
+                <div th:if="${session.sessionUser.username == author}" class="panel-heading">我的动态</div>
+                <div th:if="${session.sessionUser.username != author}" class="panel-heading">Ta的动态</div>
+            </div>
+            <div>
+                <div class="panel  panel-my" v-for="user in life" :id="'Lid_'+user.l_id"
+                     :class="{'panel-success':user.l_att == 1,'panel-info':user.l_att == 2}">
+
+                    <div class="panel-heading" v-if="user.l_att == 1">
+                        <div class="row">
+                            <div class="col-xs-10 col-md-11" :id="'Lat_'+user.l_id">关注可见</div>
+                            <div class="col-xs-2 col-md-1" v-if="user.author == usernameid">
+                                <span class="glyphicon glyphicon-sort ic-dela" aria-hidden="true"
+                                      :id="'setA_'+user.l_id" :data-id="user.l_id"
+                                      :data-att="1"
+                                      onclick="alterAtt(this)"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-heading" v-else>
+                        <div class="row">
+                            <div class="col-xs-10 col-md-11" :id="'Lat_'+user.l_id">公开</div>
+                            <div class="col-xs-2 col-md-1" v-if="user.author == usernameid">
+                                <span class="glyphicon glyphicon-sort ic-dela" aria-hidden="true"
+                                      :id="'setA_'+user.l_id" :data-id="user.l_id"
+                                      :data-att="2"
+                                      onclick="alterAtt(this)"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-10 col-xs-10 col-md-11">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <!------头像------>
+                                        <a :href="user.u_url">
+                                            <img class="media-object img-rounded" :src="user.u_url">
+                                        </a>
+                                    </div>
+                                    <div class="media-body">
+                                        <!------昵称------>
+                                        <h4 class="media-heading"><a
+                                                :href="'/room?author='+user.author">{{user.name}}</a></h4>
+                                        {{user.l_crt}}
+                                    </div>
+                                </div>
+                            </div>
+                            <!-------删除动态------>
+                            <div class="col-xs-2 col-md-1" v-if="user.author == usernameid">
+                                <h4><span class="glyphicon glyphicon-trash ic-dela" aria-hidden="true"
+                                          :id="'life_'+user.l_id" :data-id="user.l_id" title="删除"
+                                          onclick="delLife(this)"></span>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="thumbnail">
+                                    <div class="caption">
+                                        <a :href="'/lifeHtml?l_id='+user.l_id" style="color: grey">{{user.l_text}}</a>
+                                        <!--{{user.l_text}}-->
+                                    </div>
+                                    <!------动态图像------>
+                                    <a :href="user.url_1">
+                                        <img class="img-a" :src="user.url_1">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-----------------------------------------点赞评论浏览------------------>
+                        <div class="row give-height">
+                            <div class="col-xs-8 col-md-8">浏览<span :id="'look_l_'+user.l_id">{{user.look_c}}</span>次
+                            </div>
+                            <div class="col-xs-2 col-md-2">
+                                <template v-if="getOrLike(user.l_id)">
+                                    <span onclick="glyLike(this)" :id="'l_'+user.l_id" :data-id="user.l_id"
+                                          :data-author="user.author" data-a="a" class="gly-ic">
+                                        <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
+                                        <span :id="'like_l_'+user.l_id">{{user.like_c}}</span>
+                                    </span>
+                                </template>
+                                <template v-else>
+                                    <span onclick="glyLike(this)" :id="'l_'+user.l_id" :data-id="user.l_id"
+                                          :data-author="user.author" class="gly-ica">
+                                        <span class="glyphicon glyphicon-heart " aria-hidden="true"></span>
+                                        <span :id="'like_l_'+user.l_id">{{user.like_c}}</span>
+                                    </span>
+                                </template>
+                            </div>
+                            <div class="col-xs-2 col-md-2">
+                                <span class="glyphicon glyphicon-comment"
+                                      aria-hidden="true" style="color: grey"
+                                      data-toggle="collapse"
+                                      :href="'#lc'+user.l_id"
+                                      aria-expanded="true"
+                                      aria-controls="collapseExample"></span>
+                                <span :id="'com_c_'+user.l_id">{{user.com_c}}</span>
+                            </div>
+                        </div>
+                        <!-----------------------------------------一级评论------------------------>
+                        <div class="collapse in" :id="'lc'+user.l_id">
+                            <div class="" v-for="comm in comment"
+                                 v-if="comm.to_life_id == user.l_id && comm.c_type == 1 && comm.to_col_id == 0">
+                                <div class="row">
+                                    <div class="col-md-11 col-xs-10">
+                                        <div class="media comment-a">
+                                            <div class="media-left">
+                                                <!------评论者头像------>
+                                                <a :href="comm.u_url">
+                                                    <img class="media-object img-rounded" :src="comm.u_url"
+                                                         alt="">
+                                                </a>
+                                            </div>
+                                            <div class="media-body">
+                                                <a :href="'/room?author='+comm.user_id">{{comm.name}}</a>
+                                                : {{comm.c_text}}<br>
+                                                {{comm.c_time}} &nbsp;<span class="glyphicon glyphicon-comment gly-coma"
+                                                                            aria-hidden="true"
+                                                                            data-toggle="collapse"
+                                                                            :href="'#'+comm.c_id"
+                                                                            onclick="glyComment(this)"
+                                                                            :id="'gly-co-'+comm.c_id"
+                                                                            aria-expanded="false"
+                                                                            aria-controls="collapseExample"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 col-xs-2" v-if="comm.user_id == usernameid">
+                                        <h5 :data-id="comm.c_id" :data-lid="comm.to_life_id"
+                                            onclick="delComment(this)"><span
+                                                class="glyphicon glyphicon-trash ic-del"
+                                                aria-hidden="true"></span>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <!-------------------------二级评论------------------------------->
+                                <div class="row comment-a" v-for="comme in comment"
+                                     v-if="comme.to_col_id == comm.c_id">
+                                    <div class=" col-md-1"></div>
+                                    <div class="col-xs-10 col-md-10">
+                                        <div class="media">
+                                            <div class="media-left">
+                                                <a :href="comme.u_url">
+                                                    <img class="media-object img-rounded" :src="comme.u_url"
+                                                         alt="">
+                                                </a>
+                                            </div>
+                                            <div class="media-body">
+                                                <a :href="'/room?author='+comme.user_id">{{comme.name}}</a> 回复 <a
+                                                    :href="'/room?author='+comm.user_id">{{comm.name}}</a>
+                                                : {{comme.c_text}}<br>
+                                                {{comme.c_time}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 col-xs-2" v-if="comme.user_id == usernameid">
+                                        <h5 :data-id="comme.c_id" :data-lid="comme.to_life_id"
+                                            onclick="delComment(this)"><span
+                                                class="glyphicon glyphicon-trash ic-del"
+                                                aria-hidden="true"></span>
+                                        </h5>
+                                    </div>
+                                </div>
+                                <!--一级评论框-->
+                                <div class="collapse" :id="comm.c_id">
+                                    <div class="row comment-a">
+                                        <div class="col-md-1 "></div>
+                                        <div class="col-xs-8 col-md-9">
+                                            <input type="hidden" :id="'to_user_id-'+comm.c_id"
+                                                   :value="comm.user_id">
+                                            <input type="hidden" :id="'to_life_id-'+comm.c_id"
+                                                   :value="user.l_id">
+                                            <input type="text" class="form-control" :id="'input-'+comm.c_id"
+                                                   :placeholder="'回复  '+comm.name+':'">
+                                        </div>
+                                        <div class="col-md-2 col-xs-3">
+                                            <button type="button" class="btn " :data-id="comm.c_id"
+                                                    onclick="comment(this)">回复
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--------评论功能------->
+                        <div class="row">
+                            <div class="col-md-10 col-xs-8">
+                                <input type="hidden" :id="'life_author-'+user.l_id" :value="user.author">
+                                <input type="text" class="form-control" :id="'input_text-'+user.l_id"
+                                       placeholder="评论">
+                            </div>
+                            <div class="col-md-2 col-xs-4">
+                                <button type="button" class="btn btn-info" :data-id="user.l_id"
+
+                                        onclick="subComment(this)">发表
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-info" role="alert" v-if="or_true">没有更多了⊙﹏⊙</div>
+        </div>
+    </div>
+
+    <!--个人档-->
+    <div class="row" v-show="perDa">
+        <div class="col-md-4"></div>
+        <div class="col-md-7">
+            <br>
+            <div class="panel panel-info">
+                <div th:if="${session.sessionUser.username == author}" class="panel-heading">
+                    我的资料
+                </div>
+                <div th:if="${session.sessionUser.username != author}" class="panel-heading">
+                    Ta的资料
+                </div>
+            </div>
+            <div class="panel panel-warning">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <label th:if="${session.sessionUser.username == author}">我的头像&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        <label th:if="${session.sessionUser.username != author}">Ta的头像&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        <!--       <a href="/testup">更改</a>-->
+                    </li>
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-6 col-md-6">
+                                <img src="" id="imgab" class="img-rounded" style="max-width: 160px">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item"><label>详细资料&nbsp;&nbsp;&nbsp;&nbsp;</label><a
+                            th:if="${session.sessionUser.username == author}" href="/uperdata">修改</a>
+                    </li>
+                </ul>
+                <div class="panel-body" id="demo">
+
+                    昵称：<span id="i"></span><br>
+                    <br>
+                    空间名称：<span id="a"></span><br>
+                    <br>
+                    签名：<span id="b"></span><br>
+                    <br>
+                    账号：[[${author}]]<br>
+                    <br>
+                    年龄：<span id="c"></span><br>
+                    <br>
+                    性别：<span id="h"></span><br>
+                    <br>
+                    生日：<span id="d"></span><br>
+                    <br>
+                    现居地：<span id="e"></span><br>
+                    <br>
+                    职业：<span id="f"></span><br>
+                    <br>
+                    <span th:if="${session.sessionUser.username == author}">邮箱：[[${session.sessionUser.email}]]<br><br></span>
+                    个人简介：<span id="g"></span><br>
+                    <br>
+                    注册时间：<span id="j"></span><br>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+
+    <!--留言板页面-->
+    <div class="row" v-show="leaW">
+        <br>
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">留言板</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-10 col-xs-8">
+                            <input type="hidden" id="leaTo" :value="authorid">
+                            <input type="text" class="form-control" id="leaText"
+                                   placeholder="思念的话，悄悄的说……">
+                        </div>
+                        <div class="col-md-2 col-xs-4">
+                            <button type="button" class="btn btn-info"
+                                    onclick="leave()"> 留言
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!--留言展示-->
+                <ul class="list-group">
+                    <li class="list-group-item" v-for="lea in myLeave">
+                        <div class="row">
+                            <div class="col-md-11 col-xs-10">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <!------头像------>
+                                        <a :href="lea.u_url">
+                                            <img class="media-object media-lea img-rounded" :src="lea.u_url">
+                                        </a>
+                                    </div>
+                                    <div class="media-body">
+                                        <!------昵称------>
+                                        <a :href="'/room?author='+lea.user_id">{{lea.name}}</a><br>
+                                        {{lea.c_text}}<br><br><br>
+                                        {{lea.c_time}} <span class="glyphicon glyphicon-comment gly-coma"
+                                                             aria-hidden="true"
+                                                             data-toggle="collapse"
+                                                             :href="'#'+lea.c_id"
+                                                             onclick="glyComment(this)"
+                                                             :id="'gly-co-'+lea.c_id"
+                                                             aria-expanded="false"
+                                                             aria-controls="collapseExample"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1 col-xs-2" v-if="lea.user_id == usernameid">
+                                <h5 :data-id="lea.c_id" :data-c_type="lea.c_type"
+                                    onclick="delLea(this)"><span
+                                        class="glyphicon glyphicon-trash ic-del" aria-hidden="true"></span>
+                                </h5>
+                            </div>
+                        </div>
+                        <!--留言回复展示-->
+                        <div class="row" v-for="toLea in myToLeave" v-if="toLea.to_col_id == lea.c_id">
+                            <div class="col-md-1 col-xs-1"></div>
+                            <div class="col-md-10 col-xs-9">
+                                <div class="media media-mt">
+                                    <div class="media-left">
+                                        <!------头像------>
+                                        <a :href="toLea.u_url">
+                                            <img class="media-object img-rounded" :src="toLea.u_url">
+                                        </a>
+                                    </div>
+                                    <div class="media-body">
+                                        <!------昵称------>
+                                        <a :href="'/room?author='+toLea.user_id"
+                                           v-if="toLea.user_id == usernameid">我</a>
+                                        <a :href="'/room?author='+toLea.user_id" v-else>{{toLea.name}}</a>
+                                        : {{toLea.c_text}}<br>
+                                        {{toLea.c_time}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1 col-xs-2" v-if="toLea.user_id == usernameid">
+                                <h5 :data-id="toLea.c_id" :data-c_type="toLea.c_type"
+                                    onclick="delLea(this)"><span
+                                        class="glyphicon glyphicon-trash ic-del" aria-hidden="true"></span>
+                                </h5>
+                            </div>
+                        </div>
+                        <!--留言回复框-->
+                        <div class="collapse" :id="lea.c_id">
+                            <div class="row comment-a">
+                                <div class="col-md-1 col-xs-1"></div>
+                                <div class="col-xs-7 col-md-9">
+                                    <input type="hidden" :id="'to_user_id-'+lea.c_id"
+                                           :value="lea.user_id">
+                                    <input type="text" class="form-control" :id="'input-'+lea.c_id"
+                                           :placeholder="'对'+lea.name+'说:'">
+                                </div>
+                                <div class="col-md-2 col-xs-3">
+                                    <button type="button" class="btn " :data-id="lea.c_id"
+                                            onclick="repLeave(this)"> 确定
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<script src="../bootstrap/jquery.min.js"></script>
+<script src="../bootstrap/js/bootstrap.min.js"></script>
+<script src="../mycss/my.js"></script>
+
+<script type="text/javascript">
+    var username = [[${session.sessionUser.username}]];
+    var author = [[${author}]];
+    var page = 1;
+    var visPage = 1;
+
+
+    $(document).ready(function () {
+        per_image();
+        per_data();
+        inqNoticeNotRead();
+    });
+
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+
+    function per_image() {
+
+        $.ajax({
+            type: "get",
+            url: "/selectImages",
+            data: {"username": author},
+            success: function (msg) {
+                var obja = JSON.parse(msg);
+                $("#imga").attr('src', obja.u_url);
+                $("#imgab").attr('src', obja.u_url);
+                $("#name").html(obja.name);
+                $("#i").html(obja.name);
+                $("#j").html(obja.create_time);
+
+            },
+            error: function (msg) {
+                alert(msg);
+                alert("请求失败");
+            },
+        });
+    }
+
+    function per_data() {
+
+        $.ajax({
+            type: "get",
+            url: "/getperdata",
+            data: {"user_id": author},
+            success: function (msg) {
+                var obj = JSON.parse(msg);
+
+                var adate = obj.date;
+                var a1 = Date.parse(new Date(adate));
+                var time = new Date(a1);
+                var y = String(time.getFullYear());
+                var date = new Date;
+                var year = date.getFullYear();
+                var yl = year - y;
+
+                $("#a").html(obj.room_name);
+                $("#b").html(obj.mood);
+                $("#c").html(yl);
+                $("#h").html(obj.sex);
+                $("#d").html(obj.date);
+                $("#e").html(obj.locus);
+                $("#f").html(obj.profe);
+                $("#g").html(obj.brief);
+                $("#room_name").html(obj.room_name);
+                $("#room_mood").html(obj.mood);
+                $("#visc").html(obj.vis_c);
+
+            },
+            error: function (msg) {
+                alert(msg);
+                alert("请求失败");
+            },
+        });
+    }
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            life: [],
+            comment: [],
+            friends: [],
+            myLike: [],
+            myVisitor: [],
+            myLeave: [],
+            myToLeave: [],
+            usernameid: username,
+            authorid: author,
+            or_true: false,
+            no_go_down: true,
+            havaVis: true,
+            home: true,
+            perDa: false,
+            leaW: false
+        },
+        created: function () {
+            var that = this;
+            $.ajax({
+                type: "get",
+                url: "/myRoomLife",
+                data: {
+                    "author": author,
+                    "page": 0
+                },
+                success: function (msg) {
+                    var obj = JSON.parse(msg);
+                    if (obj.length < 10) {
+                        that.or_true = true;
+                        that.no_go_down = false;
+                    }
+                    that.life = obj;
+                },
+                error: function (msg) {
+                    alert("请求失败");
+                },
+            });
+
+            $.ajax({
+                type: "get",
+                url: "/myRoomComment",
+                data: {
+                    "author": author,
+                    "page": 0
+                },
+                success: function (msg) {
+                    var obj1 = JSON.parse(msg);
+                    that.comment = obj1;
+                },
+                error: function (msg) {
+                    alert("请求失败");
+                },
+            });
+            //获取留言
+            $.ajax({
+                type: "get",
+                url: "/myRoomLeave",
+                data: {
+                    "to_user_id": author,
+                    "page": 0
+                },
+                success: function (msg) {
+                    var obj1 = JSON.parse(msg);
+                    that.myLeave = obj1;
+                },
+                error: function (msg) {
+                    alert("请求失败");
+                },
+            });
+            //获取留言回复
+            $.ajax({
+                type: "get",
+                url: "/myRoomToLeave",
+                data: {
+                    "to_user_id": author,
+                    "page": 0
+                },
+                success: function (msg) {
+                    var obj1 = JSON.parse(msg);
+                    that.myToLeave = obj1;
+                },
+                error: function (msg) {
+                    alert("请求失败");
+                },
+            });
+            /*获得我关注的人列表*/
+            $.ajax({
+                type: "get",
+                url: "/getMyFriend",
+                data: {
+                    "username": username,
+                    "page": -1
+                },
+                success: function (msg) {
+                    var obj1 = JSON.parse(msg);
+                    that.friends = obj1;
+                    /*console.log(obj1);*/
+                },
+                error: function (msg) {
+                    alert(msg);
+                    alert("请求失败");
+                }
+            });
+            /*获得我的主页点赞情况*/
+            $.ajax({
+                type: "get",
+                url: "/getMyRomeLike",
+                data: {
+                    "user_id": username,
+                    "to_user_id": author,
+                    "page": 0
+                },
+                success: function (msg) {
+                    var obj2 = JSON.parse(msg);
+                    that.myLike = obj2;
+                },
+                error: function (msg) {
+                    alert("请求失败");
+                }
+            });
+            //获得访问者
+            $.ajax({
+                type: "get",
+                url: "/getRoomVisitor",
+                data: {
+                    "v_master": author,
+                    "page": 0
+                },
+                success: function (msg) {
+                    var obj1 = JSON.parse(msg);
+                    that.myVisitor = obj1;
+                    if (obj1.length < 8) {
+                        that.havaVis = false;
+                    }
+                },
+                error: function (msg) {
+                    alert("请求失败");
+                },
+            });
+        },
+
+        /*实现下拉加载，vue+jquery,以后要改*/
+        methods: {
+            test0: window.onscroll = scroll = () => {
+            if(document.body.scrollTop > 800 || document.documentElement.scrollTop > 800)
+    {
+        document.getElementById("myBtn").style.display = "block";
+    }
+    else
+    {
+        document.getElementById("myBtn").style.display = "none";
+    }
+    var bottomwindow =
+        document.documentElement.offsetHeight -
+        (document.documentElement.scrollTop + window.innerHeight);
+    var that = this.vm;
+
+    if (bottomwindow <= 1 && that.no_go_down) {
+        // var that = this.vm;
+        //请求新动态
+        $.ajax({
+            type: "get",
+            url: "/myRoomLife",
+            data: {
+                "author": author,
+                "page": page
+            },
+            success: function (msg) {
+                var obj = JSON.parse(msg);
+                if (obj.length == 0) {
+                    // alert("没有更多动态啦！");
+                    that.or_true = true;
+                    that.no_go_down = false;
+                    return;
+                }
+                if (obj.length < 10) {
+                    that.or_true = true;
+                    that.no_go_down = false;
+                }
+                for (var i = 0; i < obj.length; i++) {
+                    if (that.orTheLi(obj[i].l_id)) {
+                        continue;
+                    }
+                    that.life.push(obj[i]);
+                }
+                page++;
+                // alert(page);
+            },
+            error: function (msg) {
+                alert("请求失败");
+            }
+        });
+        //请求新评论
+        $.ajax({
+            type: "get",
+            url: "/myRoomComment",
+            data: {
+                "author": author,
+                "page": page
+            },
+            success: function (msg) {
+                var obj = JSON.parse(msg);
+                if (obj.length == 0) {
+                    return;
+                }
+                for (var i = 0; i < obj.length; i++) {
+                    if (that.getOrTheCom(obj[i].c_id)) {
+                        continue;
+                    }
+                    that.comment.push(obj[i]);
+                }
+                // alert(page);
+            },
+            error: function (msg) {
+                alert("请求失败");
+            }
+        });
+        //请求新点赞
+        $.ajax({
+            type: "get",
+            url: "/getMyRomeLike",
+            data: {
+                "user_id": username,
+                "to_user_id": author,
+                "page": page
+            },
+            success: function (msg) {
+                var obj2 = JSON.parse(msg);
+                if (obj2.length == 0) {
+                    return;
+                }
+                for (var i = 0; i < obj2.length; i++) {
+                    if (that.getOrTheLike(obj2[i].to_life_id)) {
+                        continue;
+                    }
+                    that.myLike.push(obj2[i]);
+                }
+            },
+            error: function (msg) {
+                alert("请求失败");
+            }
+        });
+    }
+    },
+    /*判断是否关注*/
+    getOrFriend: function () {
+        var that = this;
+        var friend = that.friends;
+        var author = that.authorid;
+        // console.log(friend);
+        /*console.log(author);*/
+        for (var i = 0; i < friend.length; i++) {
+            if (author == friend[i].f_friend_id) {
+                // alert(author);
+                return true;
+            }
+        }
+        return false;
+    }
+    ,
+
+    /*判断是否有相同的动态*/
+    orTheLi: function (l_id) {
+        var that = this;
+        var life = that.life;
+        for (var i = 0; i < life.length; i++) {
+            if (l_id === life[i].l_id) {
+                return true;
+            }
+        }
+        return false;
+    }
+    ,
+    /*判断是否有相同的评论*/
+    getOrTheCom: function (c_id) {
+        var that = this;
+        var comment = that.comment;
+        for (var i = 0; i < comment.length; i++) {
+            if (c_id === comment[i].c_id) {
+                return true;
+            }
+        }
+        return false;
+    }
+    ,
+    /*判断是否有相同的点赞*/
+    getOrTheLike: function (to_life_id) {
+        var that = this;
+        var myLike = that.myLike;
+        for (var i = 0; i < myLike.length; i++) {
+            if (to_life_id === myLike[i].to_life_id) {
+                return true;
+            }
+        }
+        return false;
+    }
+    ,
+
+    /*判断是否点赞*/
+    getOrLike: function (l_id) {
+        var that = this;
+        var like = that.myLike;
+        // console.log(like);
+        /*console.log(author);*/
+        for (var i = 0; i < like.length; i++) {
+            if (l_id === like[i].to_life_id) {
+                // alert(author);
+                return true;
+            }
+        }
+        return false;
+    }
+    ,
+    //获得更多访客信息
+    getMoreVisitor: function () {
+        var that = this;
+        $.ajax({
+            type: "get",
+            url: "/getRoomVisitor",
+            data: {
+                "v_master": author,
+                "page": visPage
+            },
+            success: function (msg) {
+                var obj = JSON.parse(msg);
+                if (obj.length === 0) {
+                    that.havaVis = false;
+                    return;
+                }
+                if (obj.length < 8) {
+                    that.havaVis = false;
+                }
+                for (var i = 0; i < obj.length; i++) {
+                    that.myVisitor.push(obj[i]);
+                }
+                visPage++;
+            },
+            error: function (msg) {
+                alert("请求失败");
+            },
+        });
+    }
+    ,
+    isHome: function () {
+        var that = this;
+        that.home = true;
+        that.perDa = false;
+        that.leaW = false;
+    }
+    ,
+    isPerDa: function () {
+        var that = this;
+        that.home = false;
+        that.perDa = true;
+        that.leaW = false;
+    }
+    ,
+    isLeaW: function () {
+        var that = this;
+        that.home = false;
+        that.perDa = false;
+        that.leaW = true;
+    }
+    }
+
+    })
+    ;
+</script>
+</body>
+</html>
