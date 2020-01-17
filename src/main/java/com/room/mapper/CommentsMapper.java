@@ -10,30 +10,33 @@ import java.util.List;
 @Repository
 public interface CommentsMapper {
 
-    @Select("SELECT comment.*,users.name,users.u_url FROM room.comment,room.users where comment.user_id = users.username " +
+//获得个人空间的评论
+    @Select("SELECT comment.*,a.name,a.u_url,b.name as to_name FROM room.comment,room.users a,room.users b where comment.user_id = a.username and comment.to_user_id = b.username " +
             "and to_life_id in " +
-            "(select a.l_id from " +
+            "(select c.l_id from " +
             "(SELECT l_id FROM room.life where author in " +
-            "(SELECT f_friend_id FROM room.friend where f_user_id = #{username}) order by l_id desc limit #{pages}, 10) as a)")
+            "(SELECT f_friend_id FROM room.friend where f_user_id = #{username}) order by l_id desc limit #{pages}, 10) as c)")
     List<Comments> getAllComments(int pages,String username);
 
-    @Select("SELECT comment.*,users.name,users.u_url FROM room.comment,room.users where comment.user_id = users.username "+
+//获得一个动态的评论
+    @Select("SELECT comment.*,a.name,a.u_url,b.name as to_name FROM room.comment,room.users a,room.users b where comment.user_id = a.username and comment.to_user_id = b.username "+
             "and comment.to_life_id = #{l_id}")
     List<Comments> getOneLifeComments(int l_id);
 
-    @Select("SELECT comment.*,users.name,users.u_url FROM room.comment,room.users where comment.user_id = users.username " +
+    @Select("SELECT comment.*,a.name,a.u_url,b.name as to_name FROM room.comment,room.users a,room.users b where comment.user_id = a.username and comment.to_user_id = b.username " +
             "and to_life_id in " +
-            "(select a.l_id from " +
-            "(SELECT l_id FROM room.life where author = #{author} order by l_id desc limit #{pages}, 10) as a)")
+            "(select c.l_id from " +
+            "(SELECT l_id FROM room.life where author = #{author} order by l_id desc limit #{pages}, 10) as c)")
     List<Comments> getMyRoomLifeComments(int pages,String author);
 
-    @Select("SELECT comment.*,users.name,users.u_url FROM room.comment,room.users where comment.user_id = users.username " +
+    @Select("SELECT comment.*,a.name,a.u_url,b.name as to_name FROM room.comment,room.users a,room.users b where comment.user_id = a.username and comment.to_user_id = b.username " +
             "and to_life_id in " +
-            "(select a.l_id from " +
-            "(SELECT l_id FROM room.life where l_att = 2 order by l_id desc limit #{pages},10) as a)")
+            "(select c.l_id from " +
+            "(SELECT l_id FROM room.life where l_att = 2 order by l_id desc limit #{pages},10) as c)")
     List<Comments> getPublicRoomLifeComments(int pages);
 
-    @Select("SELECT comment.*,users.name,users.u_url FROM room.comment,room.users where comment.user_id = users.username " +
+//获得刚发布的评论
+    @Select("SELECT comment.*,a.name,a.u_url,b.name as to_name FROM room.comment,room.users a,room.users b where comment.user_id = a.username and comment.to_user_id = b.username " +
             "and comment.c_id = (select a.c_id from " +
             "(select c_id from comment where user_id = #{user_id} " +
             "and to_user_id = #{to_user_id} and to_life_id = #{to_life_id} order by c_id desc limit 1)as a)")

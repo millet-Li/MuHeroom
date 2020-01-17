@@ -20,4 +20,5 @@ public class Comments {
     private int or_read;
     private String name;
     private String u_url;
+    private String to_name;
 }

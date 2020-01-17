@@ -286,7 +286,6 @@
                                                 {{comm.c_time}} &nbsp;<span class="glyphicon glyphicon-comment gly-coma"
                                                                             aria-hidden="true"
                                                                             data-toggle="collapse"
-                                                                            title="回复"
                                                                             :href="'#'+comm.c_id"
                                                                             onclick="glyComment(this)"
                                                                             :id="'gly-co-'+comm.c_id"
@@ -303,30 +302,58 @@
                                     </div>
                                 </div>
                                 <!-------------------------二级评论------------------------------->
-                                <div class="row comment-a" v-for="comme in comment"
+                                <div v-for="comme in comment"
                                      v-if="comme.to_col_id == comm.c_id">
-                                    <div class="col-md-1"></div>
-                                    <div class="col-xs-10 col-md-10">
-                                        <div class="media">
-                                            <div class="media-left">
-                                                <a :href="comme.u_url">
-                                                    <img class="media-object img-rounded" :src="comme.u_url"
-                                                         alt="...">
-                                                </a>
-                                            </div>
-                                            <div class="media-body">
-                                                <a :href="'/room?author='+comme.user_id">{{comme.name}}</a> 回复 <a
-                                                    :href="'/room?author='+comm.user_id">{{comm.name}}</a>
-                                                : {{comme.c_text}}<br>
-                                                {{comme.c_time}}
+                                    <div class="row comment-a">
+                                        <div class="col-md-1"></div>
+                                        <div class="col-xs-10 col-md-10">
+                                            <div class="media">
+                                                <div class="media-left">
+                                                    <a :href="comme.u_url">
+                                                        <img class="media-object img-rounded" :src="comme.u_url"
+                                                             alt="...">
+                                                    </a>
+                                                </div>
+                                                <div class="media-body">
+                                                    <a :href="'/room?author='+comme.user_id">{{comme.name}}</a> 回复 <a
+                                                        :href="'/room?author='+comme.to_user_id">{{comme.to_name}}</a>
+                                                    : {{comme.c_text}}<br>
+                                                    {{comme.c_time}} &nbsp;<span
+                                                        class="glyphicon glyphicon-comment gly-coma"
+                                                        aria-hidden="true"
+                                                        data-toggle="collapse"
+                                                        :href="'#'+comme.c_id"
+                                                        onclick="glyComment(this)"
+                                                        :id="'gly-co-'+comme.c_id"
+                                                        aria-expanded="false"
+                                                        aria-controls="collapseExample"></span>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="col-xs-2 col-md-1" v-if="comme.user_id == usernameid">
+                                            <h5 :data-id="comme.c_id" :data-lid="comme.to_life_id" title="删除"
+                                                onclick="delComment(this)"><span
+                                                    class="glyphicon glyphicon-trash ic-del" aria-hidden="true"></span>
+                                            </h5>
+                                        </div>
                                     </div>
-                                    <div class="col-xs-2 col-md-1" v-if="comme.user_id == usernameid">
-                                        <h5 :data-id="comme.c_id" :data-lid="comme.to_life_id" title="删除"
-                                            onclick="delComment(this)"><span
-                                                class="glyphicon glyphicon-trash ic-del" aria-hidden="true"></span>
-                                        </h5>
+                                    <!--二级评论框-->
+                                    <div class="collapse" :id="comme.c_id">
+                                        <div class="row comment-a">
+                                            <div class="col-md-1 "></div>
+                                            <div class="col-xs-8 col-md-9">
+                                                <input type="hidden" :id="'to_user_id-'+comme.c_id"
+                                                       :value="comme.user_id">
+                                                <input type="hidden" :id="'to_life_id-'+comme.c_id" :value="user.l_id">
+                                                <input type="text" class="form-control" :id="'input-'+comme.c_id"
+                                                       :placeholder="'@'+comme.name+':'">
+                                            </div>
+                                            <div class="col-md-2 col-xs-3">
+                                                <button type="button" class="btn " :data-id="comme.c_id" :data-to_cid="comm.c_id"
+                                                        onclick="comment(this)">回复
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <!--一级评论框-->
@@ -341,7 +368,7 @@
                                                    :placeholder="'@'+comm.name+':'">
                                         </div>
                                         <div class="col-md-2 col-xs-3">
-                                            <button type="button" class="btn " :data-id="comm.c_id"
+                                            <button type="button" class="btn " :data-id="comm.c_id" :data-to_cid="comm.c_id"
                                                     onclick="comment(this)">回复
                                             </button>
                                         </div>
@@ -404,9 +431,9 @@
                 var obja = JSON.parse(msg);
                 $("#imga").attr('src', obja.u_url);
                 $("#name").html(obja.name);
-           /*     if(obja.u_url == null){
-                    alert("新用户请前往-->我的主页/个人档/修改--完善个人信息");
-                }*/
+                /*     if(obja.u_url == null){
+                         alert("新用户请前往-->我的主页/个人档/修改--完善个人信息");
+                     }*/
 
             },
             error: function (msg) {
@@ -663,7 +690,8 @@
             }
         }
         return false;
-    },
+    }
+    ,
     //控制发表动态模块的展示与隐藏
     isMySay: function () {
         var that = this;
@@ -674,7 +702,8 @@
         }
     }
     }
-    });
+    })
+    ;
 </script>
 </body>
 </html>

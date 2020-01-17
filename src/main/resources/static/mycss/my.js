@@ -132,18 +132,19 @@ function subComment2target(to_user_id, to_life_id, c_text) {
 
 }
 
-//一级评论回复功能实现
+//一二级评论回复功能实现
 function comment(e) {
     var commentId = e.getAttribute("data-id");
+    var to_com_id = e.getAttribute("data-to_cid");
     var to_user_id = $("#to_user_id-" + commentId).val();
     var to_life_id = $("#to_life_id-" + commentId).val();
     var c_text = $("#input-" + commentId).val();
 
-    comment2target(to_user_id, to_life_id, commentId, c_text);
+    comment2target(to_user_id, to_life_id, commentId, to_com_id, c_text);
 }
 
-//一级评论回复子函数
-function comment2target(to_user_id, to_life_id, commentId, c_text) {
+//一二级评论回复子函数
+function comment2target(to_user_id, to_life_id, commentId, to_com_id, c_text) {
     if (!c_text) {
         alert("不能回复空内容");
         return;
@@ -156,7 +157,7 @@ function comment2target(to_user_id, to_life_id, commentId, c_text) {
             "to_user_id": to_user_id,
             "to_life_id": to_life_id,
             "c_type": 2,
-            "to_col_id": commentId,
+            "to_col_id": to_com_id,
             "c_text": c_text
         },
         success: function (response) {
