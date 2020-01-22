@@ -3,9 +3,11 @@ package com.room.controller;
 import com.alibaba.fastjson.JSON;
 import com.room.dto.Users;
 import com.room.entity.Friend;
+import com.room.entity.PerData;
 import com.room.entity.User;
 import com.room.mapper.UserMapper;
 import com.room.service.FriendService;
+import com.room.service.PerDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,8 @@ public class UserController {
     private UserMapper userMapper;
     @Autowired
     private FriendService friendService;
+    @Autowired
+    private PerDataService perDataService;
 
     @ResponseBody
     @PostMapping("/loginA")
@@ -68,6 +72,10 @@ public class UserController {
             user.setName(name);
             user.setEmail(email);
             userMapper.insert(user);
+
+            PerData perData = new PerData();
+            perData.setUser_id(username);
+            perDataService.insert(perData);
 
             Friend friend = new Friend();
             friend.setF_user_id(username);

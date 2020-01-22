@@ -166,7 +166,7 @@
                             <div class="col-sm-2">
                                 <!--<input type="text" class="form-control" id="c" placeholder="" name="sex">-->
                                 <select class="form-control" id="c" name="sex">
-                                    <option value="男">男</option>
+                                    <option value="男" selected>男</option>
                                     <option value="女">女</option>
                                 </select>
                             </div>
@@ -174,7 +174,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">生日：</label>
                             <div class="col-sm-3">
-                                <input type="date" class="form-control" id="d" placeholder="格式为：yyyy-MM-dd" name="date">
+                                <input type="date" class="form-control" id="d" value="2000-01-01" name="date">
                             </div>
                         </div>
                         <div class="form-group">
@@ -186,7 +186,7 @@
                                     <option value="江门">江门</option>
                                     <option value="珠海">珠海</option>
                                     <option value="佛山">佛山</option>
-                                    <option value="广州">广州</option>
+                                    <option value="广州" selected>广州</option>
                                     <option value="深圳">深圳</option>
                                     <option value="东莞">东莞</option>
                                     <option value="惠州">惠州</option>
@@ -198,7 +198,7 @@
                             <div class="col-sm-3">
                                 <!--<input type="text" class="form-control" id="f" placeholder="" name="profe">-->
                                 <select class="form-control" id="f" name="profe">
-                                    <option value="学生">学生</option>
+                                    <option value="学生" selected>学生</option>
                                     <option value="教师">教师</option>
                                     <option value="公务员">公务员</option>
                                     <option value="白领">白领</option>
@@ -284,19 +284,19 @@
 
                 a.val(obj.room_name);
                 $("#b").val(obj.mood);
-                $("#c").val(obj.sex);
-                $("#d").val(obj.date);
-                $("#e").val(obj.locus);
-                $("#f").val(obj.profe);
+                if (obj.sex != "") {
+                    $("#c").val(obj.sex);
+                    $("#d").val(obj.date);
+                    $("#e").val(obj.locus);
+                    $("#f").val(obj.profe);
+                }
                 $("#g").val(obj.brief);
                 flag = false;
             },
             error: function (msg) {
                 alert("请求失败");
             }
-            /*				complete : function(){
 
-                            },*/
         });
     }
 </script>
