@@ -5,8 +5,9 @@ web:
   upload-path: D:/room/image
 
 mydata:
-  patha: D:/room/image
-  pathb: D:/room/life
+  patha: file:/D:/room/image/
+  pathb: file:/D:/room/life/
+  pathc: file:/D:/room/room/
 
 spring:
   datasource:

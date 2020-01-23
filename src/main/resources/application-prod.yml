@@ -2,8 +2,9 @@ server:
   port: 8886
 
 mydata:
-  patha: C:/room/image
-  pathb: C:/room/life
+  patha: file:/C:/room/image/
+  pathb: file:/C:/room/life/
+  pathc: file:/C:/room/room/
 
 spring:
   datasource:
