@@ -1,13 +1,13 @@
 server:
   port: 8886
 
-web:
-  upload-path: D:/room/image
 
 mydata:
   patha: file:/D:/room/image/
   pathb: file:/D:/room/life/
   pathc: file:/D:/room/room/
+  upload-patha: D:/room/image
+  upload-pathb: D:/room/life
 
 spring:
   datasource:

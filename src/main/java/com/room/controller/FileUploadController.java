@@ -28,7 +28,7 @@ public class FileUploadController {
         this.resourceLoader = resourceLoader;
     }
 
-    @Value("${mydata.patha}")
+    @Value("${mydata.upload-patha}")
     private String localPath;
 
 

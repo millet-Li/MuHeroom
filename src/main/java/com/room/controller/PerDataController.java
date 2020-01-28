@@ -45,20 +45,6 @@ public class PerDataController {
                                 @RequestParam("mood") String mood,
                                 @RequestParam("brief") String brief){
         PerData perData = perDataService.select(user_id);
-        if (perData == null){
-            perData = new PerData();
-            perData.setUser_id(user_id);
-            perData.setDate(date);
-            perData.setSex(sex);
-            perData.setLocus(locus);
-            perData.setProfe(profe);
-            perData.setRoom_name(room_name);
-            perData.setMood(mood);
-            perData.setBrief(brief);
-            perDataService.insert(perData);
-          /*  System.out.println("插入成功");*/
-            return "redirect:/room?author="+user_id;
-        }else {
             perData.setUser_id(user_id);
             perData.setDate(date);
             perData.setSex(sex);
@@ -70,7 +56,7 @@ public class PerDataController {
             perDataService.update(perData);
         /*    System.out.println("更新成功");*/
             return "redirect:/room?author="+user_id;
-        }
+
     }
 
 }

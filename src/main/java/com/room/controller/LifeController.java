@@ -25,7 +25,7 @@ public class LifeController {
     @Autowired
     private LifeService lifeService;
 
-    @Value("${mydata.pathb}")
+    @Value("${mydata.upload-pathb}")
     private String localPath;
 
 

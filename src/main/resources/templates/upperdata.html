@@ -280,11 +280,10 @@
             data: {"user_id": username},
             success: function (msg) {
                 var obj = JSON.parse(msg);
-                var a = $("#a");
 
-                a.val(obj.room_name);
+                $("#a").val(obj.room_name);
                 $("#b").val(obj.mood);
-                if (obj.sex != "") {
+                if (obj.sex != null) {
                     $("#c").val(obj.sex);
                     $("#d").val(obj.date);
                     $("#e").val(obj.locus);

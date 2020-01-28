@@ -5,6 +5,8 @@ mydata:
   patha: file:/C:/room/image/
   pathb: file:/C:/room/life/
   pathc: file:/C:/room/room/
+  upload-patha: C:/room/image
+  upload-pathb: C:/room/life
 
 spring:
   datasource:
