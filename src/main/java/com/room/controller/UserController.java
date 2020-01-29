@@ -9,6 +9,7 @@ import com.room.mapper.UserMapper;
 import com.room.service.FriendService;
 import com.room.service.PerDataService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,22 +27,22 @@ public class UserController {
     @Autowired
     private PerDataService perDataService;
 
-    @ResponseBody
-    @PostMapping("/loginA")
-    public String login(@RequestParam("username") String username,
-                        @RequestParam("password") String password,
-                        HttpSession httpSession){
-        User user = userMapper.select(username);
-        if (user != null && user.getPassword().equals(password)) {
-            httpSession.setAttribute("sessionUser", user);
-            return "true";
-        } else {
-            return "false";
-        }
-    }
+//    @ResponseBody
+//    @PostMapping("/loginA")
+//    public String login(@RequestParam("username") String username,
+//                        @RequestParam("password") String password,
+//                        HttpSession httpSession){
+//        User user = userMapper.select(username);
+//        if (user != null && user.getPassword().equals(password)) {
+//            httpSession.setAttribute("sessionUser", user);
+//            return "true";
+//        } else {
+//            return "false";
+//        }
+//    }
 
     /*---------------------------退出登录---------------------------*/
-    @RequestMapping("/logout")
+    @RequestMapping("/logoutOld")
     public String logout(HttpServletRequest httpServletRequest){
         HttpSession httpSession = httpServletRequest.getSession();
         if (httpSession != null){
@@ -65,10 +66,12 @@ public class UserController {
                            @RequestParam("name") String name,
                            @RequestParam("email") String email){
         User user = userMapper.select(username);
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         if (user == null){
             user = new User();
             user.setUsername(username);
-            user.setPassword(password);
+            user.setPassword(bCryptPasswordEncoder.encode(password));
+//            System.out.println(user.getPassword());
             user.setName(name);
             user.setEmail(email);
             userMapper.insert(user);
@@ -94,8 +97,9 @@ public class UserController {
                            @RequestParam("password") String password,
                            @RequestParam("email") String email){
         User user = userMapper.select(username);
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         if (user != null && user.getEmail().equals(email)){
-            user.setPassword(password);
+            user.setPassword(bCryptPasswordEncoder.encode(password));
             userMapper.update(user);
             return "true";
         }else {
@@ -107,18 +111,31 @@ public class UserController {
     @PostMapping("/upd")
     public String upd(@RequestParam("username") String username,
                       @RequestParam("name") String name,
-                         @RequestParam("password") String password,
+//                         @RequestParam("password") String password,
                          @RequestParam("email") String email,
                       HttpServletRequest httpServletRequest){
         User user = new User();
+//        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         user.setUsername(username);
         user.setName(name);
-        user.setPassword(password);
+//        user.setPassword(bCryptPasswordEncoder.encode(password));
         user.setEmail(email);
         userMapper.upd(user);
         user = userMapper.select(username);
+        user.setPassword("");
         HttpSession httpSession = httpServletRequest.getSession();
         httpSession.setAttribute("sessionUser",user);
+        return "redirect:/room?author="+username;
+    }
+//    更改密码
+    @RequestMapping("/updPassword")
+    public String updPassword(@RequestParam("username") String username,
+                              @RequestParam("password") String password){
+        User user = new User();
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        user.setUsername(username);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
+        userMapper.updPwd(user);
         return "redirect:/room?author="+username;
     }
 //获取昵称、头像、账号、注册时间

@@ -22,8 +22,11 @@ public interface UserMapper {
     @Update("update users set password = #{password} where username = #{username}")
     void update(User user);
 
-    @Update("update users set password = #{password}, name = #{name}, email = #{email}  where username = #{username}")
+    @Update("update users set name = #{name}, email = #{email}  where username = #{username}")
     void upd(User user);
+
+    @Update("update users set password = #{password} where username = #{username}")
+    void updPwd(User user);
 
     @Update("update users set u_url = #{sqlPath} where username = #{username}")
     void updateImages(String username,String sqlPath);

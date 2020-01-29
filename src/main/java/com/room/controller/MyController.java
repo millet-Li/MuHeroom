@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -28,6 +29,19 @@ public class MyController {
     @RequestMapping("/go")
     public String go(){
         return "login";
+    }
+
+    @ResponseBody
+    @RequestMapping("/suc")
+    public String suc(){
+        return "true";
+    }
+
+    @ResponseBody
+    @RequestMapping("/fal")
+    public String fal(){
+        System.out.println("11111");
+        return "false";
     }
 
     @RequestMapping("/room")

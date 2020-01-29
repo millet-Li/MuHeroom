@@ -12,6 +12,7 @@ public class User {
     private String email;
     private String u_url;
     private int status;
+    private String roles;
     @JSONField(format = "yyyy-MM-dd")
     private Timestamp create_time;
 
@@ -69,6 +70,14 @@ public class User {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
     }
 
     public Timestamp getCreate_time() {

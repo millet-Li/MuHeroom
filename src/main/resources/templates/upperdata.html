@@ -111,7 +111,7 @@
                         <div class="row">
                             <div class="col-md-2 col-xs-3">
                                 <input type="hidden" name="username" th:value="${session.sessionUser.username}">
-                                <input class="btn btn-info" type="button" value="修改头像"
+                                <input class="btn " type="button" value="更换头像"
                                        onclick="javascript:$('input[name=\'file\']').click();"/>
                                 <!-- <input  name="fileName" readonly /> -->
                                 <input type="file" id="imgFile" accept="image/*" name="file" style="display: none;"/>
@@ -120,7 +120,7 @@
                                 <input class="form-control" id="fileNa" name="fileName" readonly/>
                             </div>-->
                             <div class="col-md-2 col-xs-2">
-                                <input class="btn btn-info" type="submit" value="上传">
+                                <input class="btn" type="submit" value="上传">
                             </div>
                         </div>
                     </form>
@@ -130,23 +130,27 @@
                     <form class="form-inline" action="/upd" method="post">
                         <input type="hidden" name="username" th:value="${session.sessionUser.username}">
                         <div class="form-group">
-                            <label for="exampleInputName2">昵称：</label>
+                            <label for="exampleInputName1">昵称：</label>
                             <input type="text" class="form-control" id="exampleInputName1" name="name"
                                    th:value="${session.sessionUser.name}">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputName2">密码：</label>
-                            <input type="password" class="form-control" id="exampleInputName2" name="password"
-                                   th:value="${session.sessionUser.password}">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail2">邮箱：</label>
                             <input type="email" class="form-control" id="exampleInputEmail2" name="email"
                                    th:value="${session.sessionUser.email}">
                         </div>
-                        <button type="submit" class="btn btn-info">更改</button>
+                        <button type="submit" class="btn ">更改</button>
                     </form>
-                    <br><br>
+                    <br>
+                    <form class="form-inline" action="/updPassword" method="post">
+                        <input type="hidden" name="username" th:value="${session.sessionUser.username}">
+                        <div class="form-group">
+                            <label for="exampleInputName2">新密码</label>
+                            <input type="password" class="form-control" id="exampleInputName2" name="password" >
+                        </div>
+                        <button type="submit" class="btn ">确认</button>
+                    </form>
+                    <br>
                     <form class="form-horizontal" action="/upperData" method="post">
                         <input type="hidden" name="user_id" th:value="${session.sessionUser.username}">
                         <div class="form-group">
@@ -217,7 +221,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-4">
-                                <button type="submit" class="btn btn-info">保存</button>
+                                <button type="submit" class="btn btn-primary">保存</button>
                             </div>
                         </div>
                     </form>

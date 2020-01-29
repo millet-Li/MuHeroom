@@ -145,18 +145,20 @@
                 //调用后台登录验证的方法
                 $.ajax({
                     type: "post",
-                    url: "/loginA",
+                    url: "/login",
                     data: {"username": username, "password": password},
                     success: function (msg) {
-                        /*					alert(msg);*/
+                        console.log(msg);
                         if (msg == "true") {
                             alert('登录成功');
+                            // myLogin(username,password);
+
                             window.location.href = '/';
                         } else {
                             alert('登录失败');
                         }
                     },
-                    error: function (msg) {
+                    error: function () {
                         alert("请求失败");
                     },
                     /*				complete : function(){

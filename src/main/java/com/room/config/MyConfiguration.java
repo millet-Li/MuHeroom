@@ -1,4 +1,4 @@
-package com.room.utils;
+package com.room.config;
 
 
 import org.springframework.beans.factory.annotation.Value;
