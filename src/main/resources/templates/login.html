@@ -1,22 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>登录木禾空间</title>
-    <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/login.css">
-    <link rel="stylesheet" href="css/sign-up-login.css">
-    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/inputEffect.css"/>
-    <link rel="stylesheet" href="css/tooltips.css"/>
-    <link rel="stylesheet" href="css/spop.min.css"/>
+    <link rel="stylesheet" th:href="@{${urls.getForLookupPath('/css/normalize.css')}}">
+    <link rel="stylesheet" th:href="@{${urls.getForLookupPath('/css/login.css')}}">
+    <link rel="stylesheet" th:href="@{${urls.getForLookupPath('/css/sign-up-login.css')}}">
+    <link rel="stylesheet" type="text/css" th:href="@{${urls.getForLookupPath('/css/font-awesome.min.css')}}">
+    <link rel="stylesheet" th:href="@{${urls.getForLookupPath('/css/inputEffect.css')}}"/>
+    <link rel="stylesheet" th:href="@{${urls.getForLookupPath('/css/tooltips.css')}}"/>
+    <link rel="stylesheet" th:href="@{${urls.getForLookupPath('/css/spop.min.css')}}"/>
 
-    <script src="js/jquery.min.js"></script>
-    <script src="js/snow.js"></script>
-    <script src="js/jquery.pure.tooltips.js"></script>
-    <script src="js/spop.min.js"></script>
+    <script th:src="@{${urls.getForLookupPath('/js/jquery.min.js')}}"></script>
+    <script th:src="@{${urls.getForLookupPath('/js/snow.js')}}"></script>
+    <script th:src="@{${urls.getForLookupPath('/js/jquery.pure.tooltips.js')}}"></script>
+    <script th:src="@{${urls.getForLookupPath('/js/spop.min.js')}}"></script>
     <script>
         (function () {
             // trim polyfill : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim

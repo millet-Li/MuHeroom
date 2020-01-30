@@ -16,7 +16,19 @@ spring:
     url: jdbc:mysql://localhost:3306/room?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=GMT%2b8
     driver-class-name: com.mysql.jdbc.Driver
   thymeleaf:
-    cache: false
+    cache: true
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+          paths: /**
+      cache: true
+      compressed: false
+      enabled: true
+    cache:
+      cachecontrol:
+        cache-public: true
 
 mybatis:
   mapper-locations: classpath:mapping/*Mapper.xml

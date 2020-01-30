@@ -16,6 +16,18 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
   thymeleaf:
     cache: true
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+          paths: /**
+      cache: true
+      compressed: false
+      enabled: true
+    cache:
+      cachecontrol:
+        cache-public: true
 
 mybatis:
   mapper-locations: classpath:mapping/*Mapper.xml
