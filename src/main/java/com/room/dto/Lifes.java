@@ -16,7 +16,7 @@ public class Lifes {
     private  String url_2;
     private String url_3;
     private  String url_4;
-    @JSONField(format = "MM-dd HH:mm")
+    @JSONField(format = "yyyy年MM月dd日 HH:mm")
     private Timestamp l_crt;
     private int like_c;
     private int look_c;

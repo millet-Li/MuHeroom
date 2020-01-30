@@ -20,7 +20,7 @@ public class MyConfiguration implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/image/**").addResourceLocations(image);
         registry.addResourceHandler("/life/**").addResourceLocations(life);
-        registry.addResourceHandler("/room/**").addResourceLocations(room);
+        registry.addResourceHandler("/rooms/**").addResourceLocations(room);
         WebMvcConfigurer.super.addResourceHandlers(registry);
     }
 
