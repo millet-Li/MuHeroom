@@ -14,4 +14,9 @@ public class ControllerConfig {
     public ResourceUrlProvider urls() {
         return this.resourceUrlProvider;
     }
+
+//    @Bean
+//    public ResourceUrlEncodingFilter resourceUrlEncodingFilter() {
+//        return new ResourceUrlEncodingFilter();
+//    }
 }

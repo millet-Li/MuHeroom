@@ -15,7 +15,7 @@ public class Comments {
     private int to_life_id;
     private int to_col_id;
     private String c_text;
-    @JSONField(format = "MM月dd日 HH:mm")
+    @JSONField(format = "yyyy-MM-dd HH:mm")
     private Timestamp c_time;
     private int or_read;
     private String name;

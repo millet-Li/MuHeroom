@@ -40,7 +40,7 @@ public class MyController {
     @ResponseBody
     @RequestMapping("/fal")
     public String fal(){
-        System.out.println("11111");
+        System.out.println("失败了");
         return "false";
     }
 
@@ -95,5 +95,11 @@ public class MyController {
     @RequestMapping("/game")
     public String game(){
         return "game";
+    }
+
+    @ResponseBody
+    @RequestMapping("/401")
+    public String No404(){
+        return "404";
     }
 }
