@@ -2,52 +2,45 @@
 
 //发表动态
 function pubNewLife() {
-    var author = $("#m_author").val();
-    var l_text = $("#m_l_text").val();
-    var l_att = $("#m_l_att").val();
-    var fileA = document.getElementById("m_file").files[0];
-
-    if (fileA == null && l_text === "") {
+    var author = $("#m_author").val();//作者ID
+    var l_text = $("#m_l_text").val();//文本内容
+    var l_att = $("#m_l_att").val();//可见范围
+    var fileA = document.getElementById("m_file").files[0];//图片信息
+    if (fileA == null && l_text === "") {//判断内容是否为空
         alert("不能发表没内容的动态！");
         return;
     }
-    //实例form对象
-    var formData = new FormData();
+    var formData = new FormData();//实例form对象并赋值
     formData.append("author", author);
     formData.append("l_text", l_text);
     formData.append("l_att", l_att);
     formData.append("file", fileA);
-    $.ajax({
+    $.ajax({//将from对象提交到后台
         type: "post",
         url: "/pubLife",
         data: formData,
         processData: false,
         contentType: false,
         dataType: "json",
-        success: function (response) {
-            //调用
-            getMyNewLife();
-            //清空
-            $("#m_l_text").val('');
+        success: function () {//成功
+            getMyNewLife();//向服务器请求刚发布的动态数据
+            $("#m_l_text").val('');//清空发表动态的各组件值
             $("#m_file").val('');
             $("#m_file_name").val('');
             $('#imgLi').html('');
         },
-        error: function (msg) {
+        error: function () {//失败
             alert("请求失败");
         }
     });
 }
-
 //发表动态图片预览功能实现
 function imgPre(e) {
     var ele = document.getElementById('m_file').files[0];
-
     var createObjectURL = function (blob) {
         return window[window.webkitURL ? 'webkitURL' : 'URL']['createObjectURL'](blob);
     };
     var newimgdata = createObjectURL(ele);
-
     var pvImg = new Image();
     pvImg.src = newimgdata;
     pvImg.style = "max-width: 200px";
@@ -73,8 +66,7 @@ function getMyNewLife() {
             }
         },
         error: function (msg) {
-            alert(msg);
-            alert("请求失败");
+            alert("请求失败： "+msg);
         }
     });
 }
@@ -242,18 +234,18 @@ function glyLike(e) {
     var like_ = $("#like_" + id);
     var like_c = like_.html();
 
-    var status = e.getAttribute("data-a");
-    if (status === null) {
+    var status = e.getAttribute("data-a");//获取属性
+    if (status === null) {//判断是否拥有属性
         like_id.removeClass("gly-ica");
-        like_id.addClass("gly-ic");
-        e.setAttribute("data-a", "a");
-        like2targeta(l_id, to_user_id);
+        like_id.addClass("gly-ic");//改变样式
+        e.setAttribute("data-a", "a");//添加属性
+        like2targeta(l_id, to_user_id);//执行点赞的Ajax请求
         like_c++;
     } else {
         like_id.removeClass("gly-ic");
         like_id.addClass("gly-ica");
         e.removeAttribute("data-a");
-        like2targetb(l_id, to_user_id);
+        like2targetb(l_id, to_user_id);//执行取消赞的Ajax请求
         like_c--;
     }
 
@@ -382,15 +374,14 @@ function delComment(e) {
                     that.comment.splice(i, 1)
                 }
             });
-
                 //改变浏览数、评论数
-                var com_ = $("#com_c_" + to_life_id);
+                var com_ = $("#com_c_" + to_life_id);//获取对应元素ID
                 var look_ = $("#look_l_" + to_life_id);
-                var com_c = com_.html();
+                var com_c = com_.html();//得到现有值
                 var look_c = look_.html();
-                com_c--;
+                com_c--;//改变现有值
                 look_c++;
-                com_.html(com_c);
+                com_.html(com_c);//重新赋值
                 look_.html(look_c);
 
             } else

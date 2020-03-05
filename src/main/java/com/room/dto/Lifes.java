@@ -7,7 +7,6 @@ import java.sql.Timestamp;
 
 @Data
 public class Lifes {
-
     private int l_id;
     private  String author;
     private  String l_att;
@@ -23,5 +22,4 @@ public class Lifes {
     private int com_c;
     private String name;
     private String u_url;
-
 }

@@ -70,8 +70,7 @@ public class UserController {
         if (user == null){
             user = new User();
             user.setUsername(username);
-            user.setPassword(bCryptPasswordEncoder.encode(password));
-//            System.out.println(user.getPassword());
+            user.setPassword(bCryptPasswordEncoder.encode(password));//BCrypt加密
             user.setName(name);
             user.setEmail(email);
             userMapper.insert(user);

@@ -15,7 +15,8 @@ public class MyConfiguration implements WebMvcConfigurer {
     private String life;
     @Value("${mydata.pathc}")
     private String room;
-//配置文件路径
+
+    //配置文件路径
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/image/**").addResourceLocations(image);

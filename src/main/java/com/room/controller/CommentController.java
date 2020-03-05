@@ -35,7 +35,6 @@ public class CommentController {
 
         if (allComments != null) {
             String json = JSON.toJSONString(allComments);
-//            System.out.println(json);
             return json;
         }
         return "no comment";
@@ -48,7 +47,6 @@ public class CommentController {
         List<Comments> oneLifeComments = commentsMapper.getOneLifeComments(l_id);
         if (oneLifeComments != null) {
             String json = JSON.toJSONString(oneLifeComments);
-//            System.out.println(json);
             return json;
         }
         return "no comment";
@@ -63,7 +61,6 @@ public class CommentController {
         List<Comments> myRoomCommennts = commentsMapper.getMyRoomLifeComments(pages, author);
         if (myRoomCommennts != null) {
             String json = JSON.toJSONString(myRoomCommennts);
-//            System.out.println(json);
             return json;
         }
         return "no comment";
@@ -77,7 +74,6 @@ public class CommentController {
         List<Comments> publicRoomCommennts = commentsMapper.getPublicRoomLifeComments(pages);
         if (publicRoomCommennts != null) {
             String json = JSON.toJSONString(publicRoomCommennts);
-//            System.out.println(json);
             return json;
         }
         return "no comment";
@@ -92,7 +88,6 @@ public class CommentController {
         List<Comments> myNewCom = commentsMapper.getMyNewCom(user_id, to_user_id, to_life_id);
         if (myNewCom != null) {
             String json = JSON.toJSONString(myNewCom);
-//            System.out.println(json);
             return json;
         }
         return "no comment";
@@ -108,7 +103,6 @@ public class CommentController {
         List<Comment> userLike = commentMapper.getLike(pages, user_id);
         if (userLike.size() > 0) {
             String json = JSON.toJSONString(userLike);
-//            System.out.println(json);
             return json;
         }
         return "false";
@@ -125,7 +119,6 @@ public class CommentController {
         List<Comment> userRomeLike = commentMapper.getMyRomeLike(pages, user_id, to_user_id);
         if (userRomeLike.size() > 0) {
             String json = JSON.toJSONString(userRomeLike);
-//            System.out.println(json);
             return json;
         }
         return "false";
@@ -141,7 +134,6 @@ public class CommentController {
         List<Comment> userPublicRoomLike = commentMapper.getpublicRoomLike(pages, user_id);
         if (userPublicRoomLike.size() > 0) {
             String json = JSON.toJSONString(userPublicRoomLike);
-//            System.out.println(json);
             return json;
         }
         return "false";
@@ -155,7 +147,6 @@ public class CommentController {
         List<Comment> userLifeLike = commentMapper.getLifeLike(user_id, to_life_id);
         if (userLifeLike.size() > 0) {
             String json = JSON.toJSONString(userLifeLike);
-//            System.out.println(json);
             return json;
         }
         return "false";
@@ -176,7 +167,6 @@ public class CommentController {
         comment.setTo_life_id(to_life_id);
         comment.setC_text(c_text);
         commentMapper.subComment(comment);
-//        System.out.println("subCom true");
         lifeService.upLook(to_life_id);
         return "true";
     }
@@ -198,9 +188,7 @@ public class CommentController {
         comment.setTo_col_id(to_col_id);
         comment.setC_text(c_text);
         commentMapper.replyComment(comment);
-
         lifeService.upLook(to_life_id);
-
         return "true";
 
     }
@@ -212,8 +200,6 @@ public class CommentController {
                              @RequestParam("to_life_id") int to_life_id) {
         commentMapper.delComment(c_id);
         lifeService.delComAddLook(to_life_id);
-        /*lifeService.delComAddLook();*/
-//        System.out.println("del true");
         return "true";
     }
 
@@ -226,7 +212,6 @@ public class CommentController {
                           @RequestParam("to_user_id") String to_user_id) {
         commentMapper.delGly(user_id, to_user_id, l_id);
         lifeService.reduceLike(l_id);
-//        System.out.println("OK");
         return "true";
     }
 
@@ -242,8 +227,6 @@ public class CommentController {
         comment.setTo_life_id(l_id);
         comment.setC_type(5);
         commentMapper.pointLike(comment);
-//        System.out.println("true");
-
         lifeService.addLike(l_id);
         return "true";
     }
@@ -261,7 +244,6 @@ public class CommentController {
         comment.setC_type(c_type);
         comment.setC_text(c_text);
         commentMapper.subComment(comment);
-//        System.out.println("is true");
         return "true";
     }
 
@@ -273,7 +255,6 @@ public class CommentController {
         List<Comments> myNewLew = commentsMapper.getMyNewLew(user_id, to_user_id);
         if (myNewLew != null) {
             String json = JSON.toJSONString(myNewLew);
-//            System.out.println(json);
             return json;
         }
         return "no Lew";
@@ -288,7 +269,6 @@ public class CommentController {
         List<Comments> myRoomLeaves = commentsMapper.getLeave(pages, to_user_id);
         if (myRoomLeaves != null) {
             String json = JSON.toJSONString(myRoomLeaves);
-            /*System.out.println(json);*/
             return json;
         }
         return "no comment";
@@ -309,7 +289,6 @@ public class CommentController {
         comment.setTo_col_id(to_col_id);
         comment.setC_text(c_text);
         commentMapper.replyComment(comment);
-//        System.out.println("is true");
         return "true";
     }
 
@@ -322,7 +301,6 @@ public class CommentController {
         List<Comments> myRoomToLeaves = commentsMapper.getToLea(pages, to_user_id);
         if (myRoomToLeaves != null) {
             String json = JSON.toJSONString(myRoomToLeaves);
-//            22
             return json;
         }
         return "no comment";
@@ -333,7 +311,6 @@ public class CommentController {
     @RequestMapping("/delLea")
     public String delComment(@RequestParam("c_id") int c_id) {
         commentMapper.delComment(c_id);
-        /*System.out.println("del true");*/
         return "true";
     }
 }

@@ -24,16 +24,11 @@ public class MyUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         com.room.entity.User theUser = userService.select(s);
         if (theUser == null) {
-        	System.out.println("oh,用户不存在");
             throw new UsernameNotFoundException("用户不存在");
-        
         }
-
         return new User(theUser.getUsername(), theUser.getPassword(),
                 createAuthority(theUser.getRoles()));
-
     }
-
 
     private List<SimpleGrantedAuthority> createAuthority(String roles) {
         String[] roleArray = roles.split(",");
