@@ -7,11 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>公共圈</title>
 
-    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
-    <link href="../mycss/my.css" rel="stylesheet">
-
-    <script src="../vue.js" type="text/javascript" charset="utf-8"></script>
+    <link th:href="@{${urls.getForLookupPath('/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link th:href="@{${urls.getForLookupPath('/mycss/my.css')}}" rel="stylesheet">
+    <script th:src="@{${urls.getForLookupPath('/vue.js')}}" type="text/javascript" charset="utf-8"></script>
 
     <style type="text/css">
         body {
@@ -109,7 +107,7 @@
     </div>
 </nav>
 
-<br><br><br><br><br>
+<br><br><br>
 <div class="container" id="app">
     <button onclick="topFunction()" id="myBtn" title="返回顶部"><span class="glyphicon glyphicon-chevron-up"
                                                                   aria-hidden="true"></span></button>
@@ -224,8 +222,10 @@
                                 </template>
                             </div>
                             <div class="col-xs-2 col-md-2">
-                                <span class="glyphicon glyphicon-comment"
-                                      aria-hidden="true" style="color: grey"
+                                <span class="glyphicon glyphicon-comment gly-com"
+                                      :id="'c_o'+user.l_id"
+                                      onclick="glyComment(this)"
+                                      aria-hidden="true"
                                       data-toggle="collapse"
                                       :href="'#lc'+user.l_id"
                                       aria-expanded="true"
@@ -365,9 +365,15 @@
     </div>
 </div>
 
-<script src="../bootstrap/jquery.min.js"></script>
-<script src="../bootstrap/js/bootstrap.min.js"></script>
-<script src="../mycss/my.js"></script>
+<footer class="modal-footer" style="border-top-width: 0px">
+    <div class="container">
+        <div>Copyright © 2020 · All Rights Reserved Powered By 举个栗子</div>
+        <br>
+    </div>
+</footer>
+<script th:src="@{${urls.getForLookupPath('/bootstrap/jquery.min.js')}}"></script>
+<script th:src="@{${urls.getForLookupPath('/bootstrap/js/bootstrap.min.js')}}"></script>
+<script th:src="@{${urls.getForLookupPath('/mycss/my.js')}}"></script>
 
 <script type="text/javascript">
     var username = [[${session.sessionUser.username}]];

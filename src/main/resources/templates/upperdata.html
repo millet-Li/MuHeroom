@@ -8,11 +8,12 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <title>修改资料</title>
 
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
-    <link href="mycss/my.css" rel="stylesheet">
-    <script src="bootstrap/jquery.min.js"></script>
-    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <link th:href="@{${urls.getForLookupPath('/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link th:href="@{${urls.getForLookupPath('/mycss/my.css')}}" rel="stylesheet">
+    <script th:src="@{${urls.getForLookupPath('/vue.js')}}" type="text/javascript" charset="utf-8"></script>
+
+    <!--<script src="bootstrap/jquery.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>-->
     <style type="text/css">
         body {
 
@@ -94,8 +95,8 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
             <div class="panel panel-success">
                 <div class="panel-heading">
                     个人资料
@@ -119,7 +120,7 @@
                             <!--<div class="col-md-5 col-xs-5">
                                 <input class="form-control" id="fileNa" name="fileName" readonly/>
                             </div>-->
-                            <div class="col-md-2 col-xs-2">
+                            <div class="col-md-2 col-xs-offset-2 col-xs-2">
                                 <input class="btn" type="submit" value="上传">
                             </div>
                         </div>
@@ -232,7 +233,15 @@
     </div>
 </div>
 
-<script src="../mycss/my.js"></script>
+<footer class="modal-footer" style="border-top-width: 0px">
+    <div class="container">
+        <div>Copyright © 2020 · All Rights Reserved Powered By 举个栗子</div>
+        <br>
+    </div>
+</footer>
+<script th:src="@{${urls.getForLookupPath('/bootstrap/jquery.min.js')}}"></script>
+<script th:src="@{${urls.getForLookupPath('/bootstrap/js/bootstrap.min.js')}}"></script>
+<script th:src="@{${urls.getForLookupPath('/mycss/my.js')}}"></script>
 
 <script>
     $(document).ready(function () {

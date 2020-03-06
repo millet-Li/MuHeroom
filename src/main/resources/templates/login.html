@@ -97,7 +97,6 @@
             $("#tab-3").prop("checked", true);
         }
 
-        /*--------------------------------登录-------------------------*/
         function login() {//登录
             var username = $("#login-username").val(),
                 password = $("#login-password").val(),
@@ -162,17 +161,15 @@
                     error: function () {
                         alert("请求失败");
                     },
-                    /*				complete : function(){
-
-                                    },*/
+                    // complete: function () {
+                    //
+                    // },
                 });
 
-                /*			alert('登录成功');*/
+                // alert('登录成功');
                 return false;
             }
         }
-
-        /*---------------注册--------------------------*/
         //注册
         function register() {
             var username = $("#register-username").val(),
@@ -243,21 +240,19 @@
             }
             //检查用户名是否已经存在
             //调后台代码检查用户名是否已经被注册
-
             //检查注册码是否正确
             //调后台方法检查注册码，这里写死为11111111
-            /*		if(code != '0000'){
-                        $.pt({
-                            target: $("#register-code"),
-                            position: 'r',
-                            align: 't',
-                            width: 'auto',
-                            height: 'auto',
-                            content:"注册码不正确"
-                           });
-                        flag = true;
-                    }*/
-
+            // if (code != '0000') {
+            //     $.pt({
+            //         target: $("#register-code"),
+            //         position: 'r',
+            //         align: 't',
+            //         width: 'auto',
+            //         height: 'auto',
+            //         content: "注册码不正确"
+            //     });
+            //     flag = true;
+            // }
 
             if (flag) {
                 return false;
@@ -277,17 +272,17 @@
                                 position: 'top-center',
                                 style: 'success',
                                 autoclose: 3000,
-                                onOpen : function(){
+                                onOpen: function () {
                                     var second = 2;
-                                    var showPop = setInterval(function(){
-                                        if(second == 0){
+                                    var showPop = setInterval(function () {
+                                        if (second == 0) {
                                             clearInterval(showPop);
                                         }
-                                        $('.spop-body').html('<h4 class="spop-title">注册成功</h4>即将于'+second+'秒后返回登录');
+                                        $('.spop-body').html('<h4 class="spop-title">注册成功</h4>即将于' + second + '秒后返回登录');
                                         second--;
-                                    },1000);
+                                    }, 1000);
                                 },
-                                onClose : function(){
+                                onClose: function () {
                                     goto_login();
                                 }
                             });
@@ -298,9 +293,8 @@
                     error: function (msg) {
                         alert("请求失败");
                     },
-                    /*				complete : function(){
-
-                                    },*/
+                    // complete: function () {
+                    // },
                 });
 
 
@@ -308,7 +302,6 @@
             }
         }
 
-        /*-----------------------重置密码-----------------------*/
         //重置密码
         function forget() {
             var username = $("#forget-username").val(),
@@ -365,20 +358,18 @@
             }
             //检查用户名是否存在
             //调后台方法
-
             //检查注册码是否正确
-            /*		if(code != '11111111'){
-                        $.pt({
-                            target: $("#forget-code"),
-                            position: 'r',
-                            align: 't',
-                            width: 'auto',
-                            height: 'auto',
-                            content:"注册码不正确"
-                           });
-                        flag = true;
-                    }*/
-
+            // if (code != '11111111') {
+            //     $.pt({
+            //         target: $("#forget-code"),
+            //         position: 'r',
+            //         align: 't',
+            //         width: 'auto',
+            //         height: 'auto',
+            //         content: "注册码不正确"
+            //     });
+            //     flag = true;
+            // }
 
             if (flag) {
                 return false;
@@ -391,24 +382,24 @@
                     success: function (msg) {
 
                         if (msg == "true") {
-                            /*alert('修改成功啦，快去登录吧');
-                            window.location.href = '/go';*/
+                            // alert('修改成功啦，快去登录吧');
+                            // window.location.href = '/go';
                             spop({
                                 template: '<h4 class="spop-title">重置密码成功</h4>即将于3秒后返回登录',
                                 position: 'top-center',
                                 style: 'success',
                                 autoclose: 3000,
-                                onOpen : function(){
+                                onOpen: function () {
                                     var second = 2;
-                                    var showPop = setInterval(function(){
-                                        if(second == 0){
+                                    var showPop = setInterval(function () {
+                                        if (second == 0) {
                                             clearInterval(showPop);
                                         }
-                                        $('.spop-body').html('<h4 class="spop-title">重置密码成功</h4>即将于'+second+'秒后返回登录');
+                                        $('.spop-body').html('<h4 class="spop-title">重置密码成功</h4>即将于' + second + '秒后返回登录');
                                         second--;
-                                    },1000);
+                                    }, 1000);
                                 },
-                                onClose : function(){
+                                onClose: function () {
                                     goto_login();
                                 }
                             });
@@ -419,9 +410,8 @@
                     error: function (msg) {
                         alert("请求失败");
                     },
-                    /*				complete : function(){
-
-                                    },*/
+                    // complete: function () {
+                    // },
                 });
 
                 return false;
@@ -438,21 +428,21 @@
 
         body {
 
-            /*background-repeat: no-repeat;
+            /*background-repeat: no-repeat;*/
 
-            background-position: center center #2D0F0F;
+            /*background-position: center center #2D0F0F;*/
 
-            background-color: #00BDDC;
+            /*background-color: #00BDDC;*/
 
-            background-image: url(/room/背景1.jpg);
+            /*background-image: url(/room/背景1.jpg);*/
 
-            background-size: cover;*/
+            /*background-size: cover;*/
 
             background-color: #f0f0f0;
 
             background-image: url(/rooms/背景1.jpg);
 
-            background-size: auto,100%;
+            background-size: auto, 100%;
 
             background-attachment: fixed;
 
@@ -475,25 +465,24 @@
 <!-- 雪花背景 -->
 <div class="snow-container"></div>
 
-
 <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-3">
         <br>
         <div>
-            <h1>&nbsp;木禾空间 <small>学生时代的梦</small></h1>
+            <h1>&nbsp;木禾空间
+                <small>学生时代的梦</small>
+            </h1>
         </div>
     </div>
     <div class="col-md-7">
-
-
         <!-- 登录控件 -->
         <div id="login">
             <input id="tab-1" type="radio" name="tab" class="sign-in hidden" checked/>
             <input id="tab-2" type="radio" name="tab" class="sign-up hidden"/>
             <input id="tab-3" type="radio" name="tab" class="sign-out hidden"/>
             <div class="wrapper">
-                <!------------------------------ 登录页面 ----------------------------------------->
+                <!-- 登录页面 -->
                 <div class="login sign-in-htm">
                     <form class="container offset1 loginform">
                         <!-- 猫头鹰控件 -->
@@ -534,7 +523,7 @@
                         </div>
                     </form>
                 </div>
-                <!----------------------------- 忘记密码页面 ----------------------------------->
+                <!-- 忘记密码页面 -->
                 <div class="login sign-out-htm">
                     <form action="#" method="post" class="container offset1 loginform">
                         <!-- 猫头鹰控件 -->
@@ -581,7 +570,7 @@
                         </div>
                     </form>
                 </div>
-                <!---------------------------- 注册页面 --------------------------------------->
+                <!-- 注册页面 -->
                 <div class="login sign-up-htm">
                     <form action="#" method="post" class="container offset1 loginform">
                         <!-- 猫头鹰控件 -->
@@ -648,5 +637,12 @@
         </div>
     </div>
 </div>
+<br><br><br><br><br><br><br><br><br><br><br><br>
+<footer class="bs-docs-footer" style="background-color: unset; color: grey">
+    <div>Copyright © 2020 · All Rights Reserved Powered By 举个栗子</div>
+</footer>
+<!--<div class="container">
+    <div>Copyright © 2020 · All Rights Reserved Powered By 举个栗子 · QQ : 1569702203</div>
+</div>-->
 </body>
 </html>

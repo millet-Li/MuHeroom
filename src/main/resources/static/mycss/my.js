@@ -204,7 +204,7 @@ function getNewCom(to_user_id, to_life_id) {
     });
 }
 
-//一级评论回复框图标颜色控制
+//一二级评论回复框图标颜色控制
 function glyComment(e) {
     var id = e.getAttribute("id");
     var gly_id = $("#" + id);
@@ -219,6 +219,47 @@ function glyComment(e) {
         gly_id.addClass("gly-com");
         // gly_id.removeClass("gly-com");
     }
+}
+
+//新的评论方式
+function newComMeans(e) {
+    var id = e.getAttribute("data-tuid");
+    var id_a = e.getAttribute("data-vid");
+    var name = e.getAttribute("data-na");
+    $("#to_user_id-"+id_a).val(id);
+    $("#input-"+id_a).attr("placeholder","回复 "+name +"：");
+    if (document.getElementById('gly-coa-'+id_a).getAttribute("aria-expanded") === "false") {
+        $('#gly-coa-'+id_a).click();
+    }
+    var st = e.getAttribute("data-st");
+    if(st === "a"){
+        $('#gly-co-'+id_a).attr("data-st","c");
+        return;
+    }
+    if(st === "b"){
+        $('#gly-co-'+id_a).attr("data-st","a");
+        return;
+    }
+    if (st === "c") {
+        $('#gly-co-'+id_a).attr("data-st","a");
+        $('#gly-coa-'+id_a).click();
+    }
+}
+//回复字体 改变颜色
+function chaCol(e) {
+    e.style.color = "#499ef3";
+}
+function chaColB(e) {
+    e.style.color = "grey";
+}
+//鼠标移近显示回复 未启用
+function changeScr(e) {
+    var id = e.getAttribute("data-id");
+    document.getElementById('gly-co-'+id).style.display = "none";
+}
+function changeSrcB(e) {
+    var id = e.getAttribute("data-id");
+    document.getElementById('gly-co-'+id).style.display = "";
 }
 
 //动态点赞调用的函数

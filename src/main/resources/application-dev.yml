@@ -14,7 +14,7 @@ spring:
     password: 123456
     url: jdbc:mysql://localhost:3306/room?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=GMT%2b8
   thymeleaf:
-    cache: true
+    cache: false
   resources:
     chain:
       strategy:
