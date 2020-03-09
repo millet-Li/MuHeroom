@@ -236,11 +236,12 @@
                                  && comm.c_type == 1
                                  && comm.to_col_id == 0 ">
                                 <!--一级评论-->
-                                <div class="row" :data-id="comm.c_id">
+                                <div class="row comment-a" :data-id="comm.c_id">
+                                    <!--鼠标移近显示评论 未启用-->
                                     <!--onmousemove="changeSrcB(this)"
                                     onmouseleave="changeScr(this)">-->
                                     <div class="col-md-11 col-xs-10">
-                                        <div class="media comment-a">
+                                        <div class="media">
                                             <div class="media-left">
                                                 <!--评论者头像-->
                                                 <a :href="comm.u_url">
@@ -252,6 +253,7 @@
                                                 <a :href="'/room?author='+comm.user_id">{{comm.name}}</a>
                                                 : {{comm.c_text}}<br>
                                                 {{comm.c_time}} &nbsp;
+                                                <!--控制评论框弹出与关闭，不可见-->
                                                 <span class="glyphicon glyphicon-comment gly-coma"
                                                       style="display: none"
                                                       aria-hidden="true"
@@ -259,20 +261,24 @@
                                                       :href="'#'+comm.c_id"
                                                       onclick="glyComment(this)"
                                                       :id="'gly-coa-'+comm.c_id"
+                                                      data-sign="a"
                                                       aria-expanded="false"
                                                       aria-controls="collapseExample"></span>
+                                                <!--回复-->
                                                 <span :id="'gly-co-'+comm.c_id"
-                                                      style="color: grey;"
+                                                      style="color: grey; font-size: small"
                                                       onclick="newComMeans(this)"
                                                       :data-tuid="comm.user_id"
                                                       :data-vid="comm.c_id"
                                                       :data-na="comm.name"
+                                                      :data-sid="comm.c_id"
                                                       data-st="a"
                                                       onmousemove="chaCol(this)"
                                                       onmouseleave="chaColB(this)">回复</span>
                                             </div>
                                         </div>
                                     </div>
+                                    <!--删除评论-->
                                     <div class="col-md-1 col-xs-2" v-if="comm.user_id == usernameid">
                                         <h5 :data-id="comm.c_id" :data-lid="comm.to_life_id" title="删除"
                                             onclick="delComment(this)"><span
@@ -280,14 +286,14 @@
                                         </h5>
                                     </div>
                                 </div>
-                                <div v-for="comme in comment"
-                                     v-if="comme.to_col_id == comm.c_id">
+                                <template v-for="comme in comment"
+                                          v-if="comme.to_col_id == comm.c_id">
                                     <!--二级评论-->
                                     <div class="row comment-a"
                                          :data-id="comme.c_id">
                                         <!--onmousemove="changeSrcB(this)"
                                         onmouseleave="changeScr(this)"-->
-                                        <div class="col-md-1"></div>
+                                        <div class="col-md-1 "></div>
                                         <div class="col-xs-10 col-md-10">
                                             <div class="media">
                                                 <div class="media-left">
@@ -310,18 +316,21 @@
                                                             :id="'gly-co-'+comme.c_id"
                                                             aria-expanded="false"
                                                             aria-controls="collapseExample"></span>-->
+                                                    <!--子评论回复-->
                                                     <span :id="'gly-co-'+comme.c_id"
-                                                          style="color: grey;"
+                                                          style="color: grey; font-size: small"
                                                           onclick="newComMeans(this)"
                                                           :data-tuid="comme.user_id"
                                                           :data-vid="comm.c_id"
                                                           :data-na="comme.name"
+                                                          :data-sid="comme.c_id"
                                                           data-st="b"
                                                           onmousemove="chaCol(this)"
                                                           onmouseleave="chaColB(this)">回复</span>
                                                 </div>
                                             </div>
                                         </div>
+                                        <!--子评论删除-->
                                         <div class="col-xs-2 col-md-1" v-if="comme.user_id == usernameid">
                                             <h5 :data-id="comme.c_id" :data-lid="comme.to_life_id" title="删除"
                                                 onclick="delComment(this)"><span
@@ -348,8 +357,8 @@
                                             </div>
                                         </div>
                                     </div>-->
-                                </div>
-                                <!-- 一级评论框 -->
+                                </template>
+                                <!-- 一二级评论框 -->
                                 <div class="collapse" :id="comm.c_id">
                                     <div class="row comment-a">
                                         <div class="col-md-1 "></div>
@@ -372,7 +381,7 @@
                             </div>
 
                         </div>
-                        <!-- 评论功能 -->
+                        <!-- 动态的评论功能 -->
                         <div class="row">
                             <div class="col-md-10 col-xs-8">
                                 <input type="hidden" :id="'life_author-'+user.l_id" :value="user.author">
@@ -386,12 +395,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="alert alert-info" role="alert" v-if="or_true">没有更多了⊙﹏⊙</div>
+                <div class="alert alert-info" role="alert" v-if="or_true">没有动态啦~~</div>
+                <button type="button" class="btn btn-info btn-block" @click="newReqLife" v-else>加载下一页</button>
             </div>
         </div>
         <div class="col-md-2"></div>
     </div>
 </div>
+<!--小尾巴-->
 <footer class="modal-footer" style="border-top-width: 0px">
     <div class="container">
         <div>Copyright © 2020 · All Rights Reserved Powered By 举个栗子</div>
@@ -402,27 +413,24 @@
 <script th:src="@{${urls.getForLookupPath('/bootstrap/js/bootstrap.min.js')}}"></script>
 <script th:src="@{${urls.getForLookupPath('/mycss/my.js')}}"></script>
 
-<script type="text/javascript">
-
-    var username = [[${session.sessionUser.username}]];
+<script  th:inline="javascript">
+    /*<![CDATA[*/
+    var username = /*[[${session.sessionUser.username}]]*/;
+    /*]]>*/
     var page = 1;
-
     //页面加载初期，调用顶部个人信息加载函数及查询通知信息
     $(document).ready(function () {
         per_image();
         per_data();
         inqNoticeNotRead();
     });
-
     // 点击按钮，返回顶部
     function topFunction() {
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
     }
-
     //顶部头像、昵称加载
     function per_image() {
-
         $.ajax({
             type: "get",
             url: "/selectImages",
@@ -431,10 +439,6 @@
                 var obja = JSON.parse(msg);
                 $("#imga").attr('src', obja.u_url);
                 $("#name").html(obja.name);
-                // if(obja.u_url == null){
-                //     alert("新用户请前往-->我的主页/个人档/修改--完善个人信息");
-                // }
-
             },
             error: function (msg) {
                 alert(msg);
@@ -442,7 +446,6 @@
             }
         });
     }
-
     //空间名称、签名加载
     function per_data() {
 
@@ -462,8 +465,6 @@
             },
         });
     }
-
-
     //实例Vue函数，开始页面主体内容加载及渲染
     var vm = new Vue({
         el: "#app",
@@ -499,7 +500,6 @@
                     alert("请求失败");
                 }
             });
-
             //加载评论
             $.ajax({
                 type: "get",
@@ -516,7 +516,7 @@
                     alert("请求失败");
                 }
             });
-            //加载我对这些动态的点赞数据
+            //加载对动态的点赞数据
             $.ajax({
                 type: "get",
                 url: "/getMyLike",
@@ -533,174 +533,169 @@
                 }
             });
         },
-
-        // 实现当前页面触底加载新页面，vue+jquery
+        // 自动翻页
         methods: {
             test0: window.onscroll = scroll = () => {
-
-            //显示返回顶部按钮
-            if(document.body.scrollTop > 800 || document.documentElement.scrollTop > 800)
-    {
-        document.getElementById("myBtn").style.display = "block";
-    }
-    else
-    {
-        document.getElementById("myBtn").style.display = "none";
-    }
-    //判断当前页面是否触底，是则向后端请求新数据
-    var bottomwindow =
-        document.documentElement.offsetHeight -
-        (document.documentElement.scrollTop + window.innerHeight);
-    var that = this.vm;
-    if (bottomwindow <= 1 && that.no_go_down) {
-        //请求新动态
-        $.ajax({
-            type: "get",
-            url: "/getlifes",
-            data: {
-                "username": username,
-                "page": page
+                //显示返回顶部按钮
+                if(document.body.scrollTop > 800 || document.documentElement.scrollTop > 800){
+                    document.getElementById("myBtn").style.display = "block";
+                }else{
+                        document.getElementById("myBtn").style.display = "none";
+                }
+                //判断当前页面是否触底，是则向后端请求新数据
+                var bottomwindow =
+                    document.documentElement.offsetHeight -
+                    (document.documentElement.scrollTop + window.innerHeight);
+                var that = this.vm;
+                if (bottomwindow <= 1 && that.no_go_down) {
+                    // vm.$options.methods.newReqLife(); //另一种写法
+                    vm.newReqLife();
+                }
             },
-            success: function (msg) {
-                var obj = JSON.parse(msg);
-                if (obj.length == 0) {
-                    // alert("没有更多动态啦！");
-                    that.or_true = true;
-                    that.no_go_down = false;
-                    return;
-                }
-                if (obj.length < 10) {
-                    that.or_true = true;
-                    that.no_go_down = false;
-                }
-                //将数据加入到data中
-                for (var i = 0; i < obj.length; i++) {
-                    //判断数据是否会重复
-                    if (that.orTheLi(obj[i].l_id)) {
-                        continue;
+            //自动翻页实现
+            newReqLife:  function () {
+                var that = this;
+                //请求新动态
+                $.ajax({
+                    type: "get",
+                    url: "/getlifes",
+                    data: {
+                        "username": username,
+                        "page": page
+                    },
+                    success: function (msg) {
+                        var obj = JSON.parse(msg);
+                        if (obj.length == 0) {
+                            // alert("没有更多动态啦！");
+                            that.or_true = true;
+                            that.no_go_down = false;
+                            return;
+                        }
+                        if (obj.length < 10) {
+                            that.or_true = true;
+                            that.no_go_down = false;
+                        }
+                        //将数据加入到data中
+                        for (var i = 0; i < obj.length; i++) {
+                            //判断数据是否会重复
+                            if (that.orTheLi(obj[i].l_id)) {
+                                continue;
+                            }
+                            that.life.push(obj[i]);
+                        }
+                        page++;
+                    },
+                    error: function (msg) {
+                        alert("请求失败");
                     }
-                    that.life.push(obj[i]);
-                }
-                page++;
-            },
-            error: function (msg) {
-                alert("请求失败");
-            }
-        });
-        //请求评论
-        $.ajax({
-            type: "get",
-            url: "/getcomments",
-            data: {
-                "username": username,
-                "page": page
-            },
-            success: function (msg) {
-                var obj = JSON.parse(msg);
-                if (obj.length == 0) {
-                    return;
-                }
-                //将数据加入到data中
-                for (var i = 0; i < obj.length; i++) {
-                    if (that.getOrTheCom(obj[i].c_id)) {
-                        continue;
+                });
+                //请求评论
+                $.ajax({
+                    type: "get",
+                    url: "/getcomments",
+                    data: {
+                        "username": username,
+                        "page": page
+                    },
+                    success: function (msg) {
+                        var obj = JSON.parse(msg);
+                        if (obj.length == 0) {
+                            return;
+                        }
+                        //将数据加入到data中
+                        for (var i = 0; i < obj.length; i++) {
+                            if (that.getOrTheCom(obj[i].c_id)) {
+                                continue;
+                            }
+                            that.comment.push(obj[i]);
+                        }
+                    },
+                    error: function (msg) {
+                        alert("请求失败");
                     }
-                    that.comment.push(obj[i]);
-                }
-            },
-            error: function (msg) {
-                alert("请求失败");
-            }
-        });
-        //加载新请求的动态中，我的点赞情况
-        $.ajax({
-            type: "get",
-            url: "/getMyLike",
-            data: {
-                "user_id": username,
-                "page": page
-            },
-            success: function (msg) {
-                var obj2 = JSON.parse(msg);
-                if (obj2.length == 0) {
-                    return;
-                }
-                //将数据加入到data中
-                for (var i = 0; i < obj2.length; i++) {
-                    if (that.getOrTheLike(obj2[i].to_life_id)) {
-                        continue;
+                });
+                //加载新请求的动态中的点赞情况
+                $.ajax({
+                    type: "get",
+                    url: "/getMyLike",
+                    data: {
+                        "user_id": username,
+                        "page": page
+                    },
+                    success: function (msg) {
+                        var obj2 = JSON.parse(msg);
+                        if (obj2.length == 0) {
+                            return;
+                        }
+                        //将数据加入到data中
+                        for (var i = 0; i < obj2.length; i++) {
+                            if (that.getOrTheLike(obj2[i].to_life_id)) {
+                                continue;
+                            }
+                            that.myLike.push(obj2[i]);
+                        }
+                    },
+                    error: function (msg) {
+                        alert("请求失败");
                     }
-                    that.myLike.push(obj2[i]);
+                });
+            },
+            // 判断是否点赞
+            getOrLike: function (l_id) {
+                var that = this;
+                var like = that.myLike;
+                for (var i = 0; i < like.length; i++) {
+                    if (l_id === like[i].to_life_id) {
+                        // alert(author);
+                        return true;
+                    }
+                }
+                return false;
+            },
+            // 判断是否有相同的动态
+            orTheLi: function (l_id) {
+                var that = this;
+                var life = that.life;
+                for (var i = 0; i < life.length; i++) {
+                    if (l_id === life[i].l_id) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+            // 判断是否有相同的评论
+            getOrTheCom: function (c_id) {
+                var that = this;
+                var comment = that.comment;
+                for (var i = 0; i < comment.length; i++) {
+                    if (c_id === comment[i].c_id) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+            // 判断是否有相同的点赞
+            getOrTheLike: function (to_life_id) {
+                var that = this;
+                var myLike = that.myLike;
+                for (var i = 0; i < myLike.length; i++) {
+                    if (to_life_id === myLike[i].to_life_id) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+            //控制发表动态模块的展示与隐藏 已弃用
+            isMySay: function () {
+                var that = this;
+                if (that.mySay === false) {
+                    that.mySay = true;
+                } else {
+                    that.mySay = false;
                 }
             },
-            error: function (msg) {
-                alert("请求失败");
-            }
-        });
-    }
-    },
-
-    // 判断是否点赞
-    getOrLike: function (l_id) {
-        var that = this;
-        var like = that.myLike;
-        for (var i = 0; i < like.length; i++) {
-            if (l_id === like[i].to_life_id) {
-                // alert(author);
-                return true;
-            }
-        }
-        return false;
-    }
-    ,
-    // 判断是否有相同的动态
-    orTheLi: function (l_id) {
-        var that = this;
-        var life = that.life;
-        for (var i = 0; i < life.length; i++) {
-            if (l_id === life[i].l_id) {
-                return true;
-            }
-        }
-        return false;
-    }
-    ,
-    // 判断是否有相同的评论
-    getOrTheCom: function (c_id) {
-        var that = this;
-        var comment = that.comment;
-        for (var i = 0; i < comment.length; i++) {
-            if (c_id === comment[i].c_id) {
-                return true;
-            }
-        }
-        return false;
-    }
-    ,
-    // 判断是否有相同的点赞
-    getOrTheLike: function (to_life_id) {
-        var that = this;
-        var myLike = that.myLike;
-        for (var i = 0; i < myLike.length; i++) {
-            if (to_life_id === myLike[i].to_life_id) {
-                return true;
-            }
-        }
-        return false;
-    }
-    ,
-    //控制发表动态模块的展示与隐藏
-    isMySay: function () {
-        var that = this;
-        if (that.mySay === false) {
-            that.mySay = true;
-        } else {
-            that.mySay = false;
-        }
-    }
-    }
-    })
-    ;
+        },
+    });
 </script>
 </body>
 </html>

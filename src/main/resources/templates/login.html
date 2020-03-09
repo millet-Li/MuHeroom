@@ -141,8 +141,7 @@
 
             if (flag) {
                 return false;
-            } else {//登录
-                //调用后台登录验证的方法
+            } else {//登录 调用后台登录验证的方法
                 $.ajax({
                     type: "post",
                     url: "/login",
@@ -170,6 +169,7 @@
                 return false;
             }
         }
+
         //注册
         function register() {
             var username = $("#register-username").val(),
@@ -179,7 +179,7 @@
                 code = $("#register-code").val(),
                 flag = false,
                 validatecode = null;
-            //判断用户名密码是否为空
+            //判断账号密码是否为空
             if (username == "") {
                 $.pt({
                     target: $("#register-username"),
@@ -188,17 +188,6 @@
                     width: 'auto',
                     height: 'auto',
                     content: "用户名不能为空"
-                });
-                flag = true;
-            }
-            if (code == "") {
-                $.pt({
-                    target: $("#register-code"),
-                    position: 'r',
-                    align: 't',
-                    width: 'auto',
-                    height: 'auto',
-                    content: "邮箱不能为空"
                 });
                 flag = true;
             }
@@ -224,6 +213,18 @@
                     });
                     flag = true;
                 }
+            }
+            //判断邮箱是否正确
+            if (!isEmail(code)) {
+                $.pt({
+                    target: $("#register-code"),
+                    position: 'r',
+                    align: 't',
+                    width: 'auto',
+                    height: 'auto',
+                    content: "请输入正确的邮箱"
+                });
+                flag = true;
             }
             //用户名只能是15位以下的字母或数字
             var regExp = new RegExp("^[a-zA-Z0-9_]{1,15}$");
@@ -257,7 +258,6 @@
             if (flag) {
                 return false;
             } else {//注册
-
                 $.ajax({
                     type: "post",
                     url: "/register",
@@ -296,8 +296,42 @@
                     // complete: function () {
                     // },
                 });
+                return false;
+            }
+        }
 
+        //重写判断邮箱的方法
+        function isEmail(email) {
+            var index = email.indexOf("@");
+            if (index === -1) {
+                return false;
+            } else {
+                if (index + 2 >= email.length - 1) {
+                    return false;
+                }
+                var endStr = email.substring(index + 2, email.length - 1);
+                var index1 = endStr.indexOf(".");
+                if (index1 === -1) {
+                    return false;
+                } else {
+                    var staStr = email.substr(0, index);
+                    if (staStr.length == 0) {
+                        return false;
+                    }
+                    for (var i = 0; i < staStr.length; i++) {
+                        if (!isABC(i)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
 
+        function isABC(charStr) {
+            if (charStr >= "a" && charStr <= "z" || charStr >= "A" && charStr <= "Z" || charStr >= "0" && charStr <= "9" || charStr === "_") {
+                return true;
+            } else {
                 return false;
             }
         }
@@ -309,7 +343,6 @@
                 code = $("#forget-code").val(),
                 flag = false,
                 validatecode = null;
-            //判断用户名密码是否为空
             if (username == "") {
                 $.pt({
                     target: $("#forget-username"),
@@ -321,14 +354,14 @@
                 });
                 flag = true;
             }
-            if (code == "") {
+            if (!isEmail(code)) {
                 $.pt({
                     target: $("#forget-code"),
                     position: 'r',
                     align: 't',
                     width: 'auto',
                     height: 'auto',
-                    content: "邮箱不能为空"
+                    content: "邮箱格式错误"
                 });
                 flag = true;
             }
@@ -373,17 +406,13 @@
 
             if (flag) {
                 return false;
-            } else {//重置密码
-
+            } else {//重置密码 向后台发送请求
                 $.ajax({
                     type: "post",
                     url: "/update",
                     data: {"username": username, "password": password, "email": code},
                     success: function (msg) {
-
                         if (msg == "true") {
-                            // alert('修改成功啦，快去登录吧');
-                            // window.location.href = '/go';
                             spop({
                                 template: '<h4 class="spop-title">重置密码成功</h4>即将于3秒后返回登录',
                                 position: 'top-center',
@@ -408,12 +437,11 @@
                         }
                     },
                     error: function (msg) {
-                        alert("请求失败");
+                        alert("请求失败" + msg);
                     },
                     // complete: function () {
                     // },
                 });
-
                 return false;
             }
         }
@@ -427,25 +455,15 @@
         }
 
         body {
-
             /*background-repeat: no-repeat;*/
-
             /*background-position: center center #2D0F0F;*/
-
             /*background-color: #00BDDC;*/
-
             /*background-image: url(/room/背景1.jpg);*/
-
             /*background-size: cover;*/
-
             background-color: #f0f0f0;
-
             background-image: url(/rooms/背景1.jpg);
-
             background-size: auto, 100%;
-
             background-attachment: fixed;
-
         }
 
         .snow-container {
@@ -457,17 +475,14 @@
             pointer-events: none;
             z-index: 100001;
         }
-
     </style>
 </head>
 <body>
-
 <!-- 雪花背景 -->
 <div class="snow-container"></div>
-
-<div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-3">
+<div class="row" style="margin-right : 1px;margin-left: 1px">
+    <div class="col-md-1"></div>
+    <div class="col-md-4">
         <br>
         <div>
             <h1>&nbsp;木禾空间
@@ -617,7 +632,7 @@
 								</label>
 							</span>
                                 <span class="input input--hideo">
-								<input class="input__field input__field--hideo" type="email" id="register-code"
+								<input class="input__field input__field--hideo" type="text" id="register-code"
                                        autocomplete="off" placeholder="请输入邮箱"/>
 								<label class="input__label input__label--hideo" for="register-code">
 									<i class="fa fa-fw fa-wifi icon icon--hideo"></i>

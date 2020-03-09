@@ -77,12 +77,18 @@ public class UserController {
 
             PerData perData = new PerData();
             perData.setUser_id(username);
+            perData.setRoom_name(name+"的空间");
+            perData.setMood("这是我的心情");
             perDataService.insert(perData);
 
             Friend friend = new Friend();
             friend.setF_user_id(username);
             friend.setF_friend_id(username);
             friendService.addFriend(friend);
+            Friend friend1 = new Friend();
+            friend1.setF_user_id(username);
+            friend1.setF_friend_id("18824483850");
+            friendService.addFriend(friend1);
             return "true";
         }else {
             return "false";

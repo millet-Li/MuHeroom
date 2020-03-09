@@ -243,12 +243,12 @@
 <script th:src="@{${urls.getForLookupPath('/bootstrap/js/bootstrap.min.js')}}"></script>
 <script th:src="@{${urls.getForLookupPath('/mycss/my.js')}}"></script>
 
-<script>
+<script th:inline="javascript">
+
     $(document).ready(function () {
         per_data();
         inqNoticeNotRead();
     });
-
     //preview img ： filereader方式
     /*document.getElementById('imgFile').onchange = function (e) {
         var ele = document.getElementById('imgFile').files[0];
@@ -269,12 +269,10 @@
     //preview img ： URL.createObjectURL 方式
     document.getElementById('imgFile').onchange = function (e) {
         var ele = document.getElementById('imgFile').files[0];
-
         var createObjectURL = function (blob) {
             return window[window.webkitURL ? 'webkitURL' : 'URL']['createObjectURL'](blob);
         };
         var newimgdata = createObjectURL(ele);
-
         var pvImg = new Image();
         pvImg.src = newimgdata;
         pvImg.style = "max-width: 140px";
@@ -283,8 +281,9 @@
         //$('#imgY').attr('src',pvImg.src);
     }
 
-    var username = [[${session.sessionUser.username}]];
-
+    /*<![CDATA[*/
+    var username = /*[[${session.sessionUser.username}]]*/;
+    /*]]>*/
     /*---------------发送请求--------*/
     function per_data() {
         $.ajax({

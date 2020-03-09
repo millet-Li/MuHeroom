@@ -173,8 +173,7 @@ function comment2target(to_user_id, to_life_id, commentId, to_com_id, c_text) {
 
         },
         error: function (msg) {
-            alert(msg);
-            alert("请求失败");
+            alert("请求失败"+msg);
         }
     });
 }
@@ -190,16 +189,15 @@ function getNewCom(to_user_id, to_life_id) {
             "to_user_id": to_user_id,
             "to_life_id": to_life_id
         },
-        success: function (response) {
-            var response = JSON.parse(response);
+        success: function (responseA) {
+            var response = JSON.parse(responseA);
             //将数据加入到data中
             for (var i = 0; i < response.length; i++) {
                 that.comment.push(response[i]);
             }
         },
         error: function (msg) {
-            alert(msg);
-            alert("请求失败");
+            alert("请求失败： "+msg);
         },
     });
 }
@@ -221,31 +219,47 @@ function glyComment(e) {
     }
 }
 
-//新的评论方式
+//新的评论框出现方式
 function newComMeans(e) {
+    //被评论者账号ID
     var id = e.getAttribute("data-tuid");
+    //父评论的ID
     var id_a = e.getAttribute("data-vid");
+    //被评论者账号昵称
     var name = e.getAttribute("data-na");
+    //更改评论框相关内容
     $("#to_user_id-"+id_a).val(id);
     $("#input-"+id_a).attr("placeholder","回复 "+name +"：");
+    //如果评论框未打开，将其打开
     if (document.getElementById('gly-coa-'+id_a).getAttribute("aria-expanded") === "false") {
         $('#gly-coa-'+id_a).click();
     }
-    var st = e.getAttribute("data-st");
-    if(st === "a"){
-        $('#gly-co-'+id_a).attr("data-st","c");
-        return;
-    }
-    if(st === "b"){
-        $('#gly-co-'+id_a).attr("data-st","a");
-        return;
-    }
-    if (st === "c") {
-        $('#gly-co-'+id_a).attr("data-st","a");
+    //改进后的实现方式，如需使用原有方式则注释这段代码
+    var sid = e.getAttribute("data-sid");
+    if (document.getElementById('gly-coa-'+id_a).getAttribute("data-sign") === sid) {
         $('#gly-coa-'+id_a).click();
+        //神奇的js，这行代码有没有不影响程序稳健
+         $('#gly-coa-'+id_a).attr("data-sign","a");
+    }else {
+        $('#gly-coa-'+id_a).attr("data-sign",sid);
     }
+
+    //所属评论类型 a 父评论 b 子评论 c 父评论的另一状态 第一次时的实现方式，已弃用 若使用则注释掉改进部分的代码
+    // var st = e.getAttribute("data-st");
+    // if(st === "a"){
+    //     $('#gly-co-'+id_a).attr("data-st","c");
+    //     return;
+    // }
+    // if(st === "b"){
+    //     $('#gly-co-'+id_a).attr("data-st","a");
+    //     return;
+    // }
+    // if (st === "c") {
+    //     $('#gly-co-'+id_a).attr("data-st","a");
+    //     $('#gly-coa-'+id_a).click();
+    // }
 }
-//回复字体 改变颜色
+//回复字体的颜色改变 新
 function chaCol(e) {
     e.style.color = "#499ef3";
 }

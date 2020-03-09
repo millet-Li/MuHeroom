@@ -237,9 +237,9 @@
                         <div class="collapse in" :id="'lc'+user.l_id">
                             <div class="" v-for="comm in comment"
                                  v-if="comm.to_life_id == user.l_id && comm.c_type == 1 && comm.to_col_id == 0">
-                                <div class="row">
+                                <div class="row comment-a">
                                     <div class="col-md-11 col-xs-10">
-                                        <div class="media comment-a">
+                                        <div class="media">
                                             <div class="media-left">
                                                 <!------评论者头像------>
                                                 <a :href="comm.u_url">
@@ -316,7 +316,8 @@
                                                        :placeholder="'@'+comme.name+':'">
                                             </div>
                                             <div class="col-md-2 col-xs-3">
-                                                <button type="button" class="btn " :data-id="comme.c_id" :data-to_cid="comm.c_id"
+                                                <button type="button" class="btn " :data-id="comme.c_id"
+                                                        :data-to_cid="comm.c_id"
                                                         onclick="comment(this)">回复
                                                 </button>
                                             </div>
@@ -335,7 +336,8 @@
                                                    :placeholder="'回复 '+comm.name+' :'">
                                         </div>
                                         <div class="col-md-2 col-xs-3">
-                                            <button type="button" class="btn " :data-id="comm.c_id" :data-to_cid="comm.c_id"
+                                            <button type="button" class="btn " :data-id="comm.c_id"
+                                                    :data-to_cid="comm.c_id"
                                                     onclick="comment(this)">回复
                                             </button>
                                         </div>
@@ -359,6 +361,7 @@
                     </div>
                 </div>
                 <div class="alert alert-info" role="alert" v-if="or_true">没有更多了⊙﹏⊙</div>
+                <button type="button" class="btn btn-info btn-block" @click="newReqLife" v-else>加载下一页</button>
             </div>
         </div>
         <div class="col-md-2"></div>
@@ -375,8 +378,10 @@
 <script th:src="@{${urls.getForLookupPath('/bootstrap/js/bootstrap.min.js')}}"></script>
 <script th:src="@{${urls.getForLookupPath('/mycss/my.js')}}"></script>
 
-<script type="text/javascript">
-    var username = [[${session.sessionUser.username}]];
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var username = /*[[${session.sessionUser.username}]]*/;
+    /*]]>*/
     var page = 1;
 
     function topFunction() {
@@ -445,174 +450,165 @@
             inqNoticeNotRead();
         },
 
-        /*实现下拉加载，vue+jquery,以后要改*/
+        /*实现下拉加载，vue+jquery*/
         methods: {
             test0: window.onscroll = scroll = () => {
-            if(document.body.scrollTop > 800 || document.documentElement.scrollTop > 800)
-    {
-        document.getElementById("myBtn").style.display = "block";
-    }
-    else
-    {
-        document.getElementById("myBtn").style.display = "none";
-    }
-    var bottomwindow =
-        document.documentElement.offsetHeight -
-        (document.documentElement.scrollTop + window.innerHeight);
-    var that = this.vm;
+                if(document.body.scrollTop > 800 || document.documentElement.scrollTop > 800){
+                    document.getElementById("myBtn").style.display = "block";
+                }else{
+                    document.getElementById("myBtn").style.display = "none";
+                }
+                var bottomwindow =
+                    document.documentElement.offsetHeight -
+                    (document.documentElement.scrollTop + window.innerHeight);
+                var that = this.vm;
 
-    if (bottomwindow <= 1 && that.no_go_down) {
-        // var that = this.vm;
-        $.ajax({
-            type: "get",
-            url: "/publicRoomLife",
-            data: {
-                "page": page
-            },
-            success: function (msg) {
-                var obj = JSON.parse(msg);
-                if (obj.length == 0) {
-                    // alert("没有更多动态啦！");
-                    that.or_true = true;
-                    that.no_go_down = false;
-                    return;
+                if (bottomwindow <= 1 && that.no_go_down) {
+                    vm.newReqLife();
                 }
-                if (obj.length < 10) {
-                    that.or_true = true;
-                    that.no_go_down = false;
-                }
-                for (var i = 0; i < obj.length; i++) {
-                    if (that.orTheLi(obj[i].l_id)) {
-                        continue;
+                },
+            newReqLife:   function () {
+                var that = this;
+                $.ajax({
+                    type: "get",
+                    url: "/publicRoomLife",
+                    data: {
+                        "page": page
+                    },
+                    success: function (msg) {
+                        var obj = JSON.parse(msg);
+                        if (obj.length == 0) {
+                            // alert("没有更多动态啦！");
+                            that.or_true = true;
+                            that.no_go_down = false;
+                            return;
+                        }
+                        if (obj.length < 10) {
+                            that.or_true = true;
+                            that.no_go_down = false;
+                        }
+                        for (var i = 0; i < obj.length; i++) {
+                            if (that.orTheLi(obj[i].l_id)) {
+                                continue;
+                            }
+                            that.life.push(obj[i]);
+                        }
+                        page++;
+                        // alert(page);
+                    },
+                    error: function (msg) {
+                        alert("请求失败");
                     }
-                    that.life.push(obj[i]);
-                }
-                page++;
-                // alert(page);
-            },
-            error: function (msg) {
-                alert("请求失败");
-            }
-        });
+                });
 
-        $.ajax({
-            type: "get",
-            url: "/publicRoomComment",
-            data: {
-                "page": page
-            },
-            success: function (msg) {
-                var obj = JSON.parse(msg);
-                if (obj.length == 0) {
-                    return;
-                }
-                for (var i = 0; i < obj.length; i++) {
-                    if (that.getOrTheCom(obj[i].c_id)) {
-                        continue;
+                $.ajax({
+                    type: "get",
+                    url: "/publicRoomComment",
+                    data: {
+                        "page": page
+                    },
+                    success: function (msg) {
+                        var obj = JSON.parse(msg);
+                        if (obj.length == 0) {
+                            return;
+                        }
+                        for (var i = 0; i < obj.length; i++) {
+                            if (that.getOrTheCom(obj[i].c_id)) {
+                                continue;
+                            }
+                            that.comment.push(obj[i]);
+                        }
+                        // alert(page);
+                    },
+                    error: function (msg) {
+                        alert("请求失败");
                     }
-                    that.comment.push(obj[i]);
-                }
-                // alert(page);
-            },
-            error: function (msg) {
-                alert("请求失败");
-            }
-        });
+                });
 
-        $.ajax({
-            type: "get",
-            url: "/getPublicRoomLike",
-            data: {
-                "user_id": username,
-                "page": page
-            },
-            success: function (msg) {
-                var obj2 = JSON.parse(msg);
-                if (obj2.length == 0) {
-                    return;
-                }
-                for (var i = 0; i < obj2.length; i++) {
-                    if (that.getOrTheLike(obj2[i].to_life_id)) {
-                        continue;
+                $.ajax({
+                    type: "get",
+                    url: "/getPublicRoomLike",
+                    data: {
+                        "user_id": username,
+                        "page": page
+                    },
+                    success: function (msg) {
+                        var obj2 = JSON.parse(msg);
+                        if (obj2.length == 0) {
+                            return;
+                        }
+                        for (var i = 0; i < obj2.length; i++) {
+                            if (that.getOrTheLike(obj2[i].to_life_id)) {
+                                continue;
+                            }
+                            that.myLike.push(obj2[i]);
+                        }
+                    },
+                    error: function (msg) {
+                        alert("请求失败");
                     }
-                    that.myLike.push(obj2[i]);
-                }
+                });
             },
-            error: function (msg) {
-                alert("请求失败");
-            }
-        });
-    }
-    },
+            /*判断是否有相同的动态*/
+            orTheLi: function (l_id) {
+                var that = this;
+                var life = that.life;
+                for (var i = 0; i < life.length; i++) {
+                    if (l_id === life[i].l_id) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+            /*判断是否有相同的评论*/
+            getOrTheCom: function (c_id) {
+                var that = this;
+                var comment = that.comment;
+                for (var i = 0; i < comment.length; i++) {
+                    if (c_id === comment[i].c_id) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+            /*判断是否有相同的点赞*/
+            getOrTheLike: function (to_life_id) {
+                var that = this;
+                var myLike = that.myLike;
+                for (var i = 0; i < myLike.length; i++) {
+                    if (to_life_id === myLike[i].to_life_id) {
+                        return true;
+                    }
+                }
+                return false;
+            },
 
-    /*判断是否有相同的动态*/
-    orTheLi: function (l_id) {
-        var that = this;
-        var life = that.life;
-        for (var i = 0; i < life.length; i++) {
-            if (l_id === life[i].l_id) {
-                return true;
+            /*判断是否点赞*/
+            getOrLike: function (l_id) {
+                var that = this;
+                var like = that.myLike;
+                // console.log(like);
+                /*console.log(author);*/
+                for (var i = 0; i < like.length; i++) {
+                    if (l_id === like[i].to_life_id) {
+                        // alert(author);
+                        return true;
+                    }
+                }
+                return false;
+            },
+
+            isMySay: function () {
+                var that = this;
+                if (that.mySay === false) {
+                    that.mySay = true;
+                } else {
+                    that.mySay = false;
+                }
+
             }
         }
-        return false;
-    }
-    ,
-    /*判断是否有相同的评论*/
-    getOrTheCom: function (c_id) {
-        var that = this;
-        var comment = that.comment;
-        for (var i = 0; i < comment.length; i++) {
-            if (c_id === comment[i].c_id) {
-                return true;
-            }
-        }
-        return false;
-    }
-    ,
-    /*判断是否有相同的点赞*/
-    getOrTheLike: function (to_life_id) {
-        var that = this;
-        var myLike = that.myLike;
-        for (var i = 0; i < myLike.length; i++) {
-            if (to_life_id === myLike[i].to_life_id) {
-                return true;
-            }
-        }
-        return false;
-    }
-    ,
-
-    /*判断是否点赞*/
-    getOrLike: function (l_id) {
-        var that = this;
-        var like = that.myLike;
-        // console.log(like);
-        /*console.log(author);*/
-        for (var i = 0; i < like.length; i++) {
-            if (l_id === like[i].to_life_id) {
-                // alert(author);
-                return true;
-            }
-        }
-        return false;
-    }
-    ,
-
-    isMySay: function () {
-        var that = this;
-        if (that.mySay === false) {
-            that.mySay = true;
-        } else {
-            that.mySay = false;
-        }
-
-    }
-
-    }
-
-
-    })
-    ;
+    });
 </script>
 </body>
 </html>

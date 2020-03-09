@@ -183,14 +183,16 @@
 
 <script src="../mycss/my.js"></script>
 
-<script>
+<script th:inline="javascript">
     /*---------------自动调用ajax函数--------------*/
     $(document).ready(function () {
         per_data();
         per_image();
         inqNoticeNotRead();
     });
-    var username = [[${session.sessionUser.username}]];
+    /*<![CDATA[*/
+    var username = /*[[${session.sessionUser.username}]]*/;
+    /*]]>*/
     var user_id = [[${user_id}]];
     /*---------------发送请求--------------*/
     function per_data() {

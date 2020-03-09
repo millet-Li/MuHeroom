@@ -159,8 +159,10 @@
 <script th:src="@{${urls.getForLookupPath('/bootstrap/js/bootstrap.min.js')}}"></script>
 <script th:src="@{${urls.getForLookupPath('/mycss/my.js')}}"></script>
 
-<script type="text/javascript">
-    var username = [[${session.sessionUser.username}]];
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var username = /*[[${session.sessionUser.username}]]*/;
+    /*]]>*/
     var seaText = $("#tex").val();
     var page = 1;
 
