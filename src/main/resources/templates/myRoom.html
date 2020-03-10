@@ -6,101 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>主页</title>
-    <link th:href="@{${urls.getForLookupPath('/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
-    <link href="../bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
-    <link th:href="@{${urls.getForLookupPath('/mycss/my.css')}}" rel="stylesheet">
-    <script th:src="@{${urls.getForLookupPath('/vue.js')}}" type="text/javascript" charset="utf-8"></script>
-
-    <style type="text/css">
-        body {
-            /*background-repeat: no-repeat;*/
-            /*background-position: center center #2D0F0F;*/
-            background-color: #f0f0f0;
-            background-image: url(/rooms/背景7.jpeg);
-            background-size: 100%;
-            /*background-size: cover;*/
-            background-attachment: fixed;
-
-        }
-        #myBtn {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 30px;
-            z-index: 99;
-            border: none;
-            outline: none;
-            background-color: #808080bd;
-            color: white;
-            cursor: pointer;
-            padding: 12px;
-            border-radius: 8px;
-        }
-
-        #myBtn:hover {
-            background-color: #555;
-        }
-    </style>
+    <head th:insert="~{commons::head}"></head>
 </head>
 <body>
 <!--导航栏-->
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">木禾空间</a>
-        </div>
-
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li th:if="${session.sessionUser != null}"><a href="/"><span class="glyphicon glyphicon-user"
-                                                                             aria-hidden="true"></span> 个人空间</a>
-                </li>
-                <li class="active" th:if="${session.sessionUser.username == author}"><a style="color: #00a1d6"
-                                                                                        th:href="'/room?author='+${session.sessionUser.username}"><span
-                        class="glyphicon glyphicon-home" aria-hidden="true"></span> 我的主页</a></li>
-                <li th:if="${session.sessionUser.username != author}"><a
-                        th:href="'/room?author='+${session.sessionUser.username}"><span class="glyphicon glyphicon-home"
-                                                                                        aria-hidden="true"></span> 我的主页</a>
-                </li>
-                <li th:if="${session.sessionUser != null}"><a href="/friend"><span
-                        class="glyphicon glyphicon-tree-deciduous" aria-hidden="true"></span> 好友</a></li>
-                <li><a href="/publicRoom"><span class="glyphicon glyphicon-leaf" aria-hidden="true"></span> 公共圈</a></li>
-            </ul>
-            <form class="navbar-form navbar-left" action="/search">
-                <div class="form-group">
-                    <input type="text" class="form-control" name="seaText" placeholder="账号、昵称">
-                </div>
-                <button type="submit" class="btn btn-default">查找</button>
-            </form>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="hidden-sm hidden-xs"><a href="/play"><span class="glyphicon glyphicon-ice-lolly-tasted"
-                                                                      aria-hidden="true"></span> 娱乐</a></li>
-                <li><a href="/notice">
-                    <span class="glyphicon glyphicon-bell" aria-hidden="true" id="ic_notice"></span>
-                    <span class="badge" id="notice">0</span>
-                </a></li>
-                <li th:if="${session.sessionUser == null}"><a href="/go">登录</a></li>
-                <li class="dropdown" th:if="${session.sessionUser != null}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">[[${session.sessionUser.name}]] <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <!--                        <li role="separator" class="divider"></li>-->
-                        <li><a href="/logout" style="color: #00a1d6"><span class="glyphicon glyphicon-log-out"
-                                                                           aria-hidden="true"></span> 退出登录</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div th:replace="commons::navigation(active='myRoom')"></div>
 <!--个人资料展示-->
 <br><br><br>
 <!--<div class="container"> &lt;!&ndash;style="background-image: url()"&ndash;&gt;
@@ -132,7 +42,7 @@
                     </button>
                 </template>
             </div>
-            <div v-if="!getOrFriend()">
+            <div v-else>
                 <button type="button" class="btn btn-block btn-info" :id="'f_'+authorid"
                         :data-id="authorid" :data-friend_id="authorid" data-s="b" onclick="friend(this)">关注
                 </button>
@@ -144,37 +54,25 @@
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8">
-            <ul class="nav nav-pills" v-show="home">
-                <!--<li role="presentation" class="active"><a id="homeHref" :href="'/room?author='+authorid">主页</a></li>
-                <li role="presentation"><a href="" id="leaveHref">留言板</a></li>
-                <li role="presentation"><a :href="'/perData?user_id='+authorid" id="perHref">个人档</a></li>-->
-                <li role="presentation" class="active"><a @click="isHome()">主页</a></li>
-                <li role="presentation"><a @click="isPerDa()">个人档</a></li>
-                <li role="presentation"><a @click="isLeaW()">留言板</a></li>
-            </ul>
-            <ul class="nav nav-pills" v-show="perDa">
-                <li role="presentation"><a @click="isHome()">主页</a></li>
-                <li role="presentation" class="active"><a @click="isPerDa()">个人档</a></li>
-                <li role="presentation"><a @click="isLeaW()">留言板</a></li>
-            </ul>
-            <ul class="nav nav-pills" v-show="leaW">
-                <li role="presentation"><a @click="isHome()">主页</a></li>
-                <li role="presentation"><a @click="isPerDa()">个人档</a></li>
-                <li role="presentation" class="active"><a @click="isLeaW()">留言板</a></li>
+            <ul class="nav nav-pills" >
+                <li role="presentation" :class="{active:home}"><a @click="isHome()">主页</a></li>
+                <li role="presentation" :class="{active:perDa}"><a @click="isPerDa()">个人档</a></li>
+                <li role="presentation" :class="{active:leaW}"><a @click="isLeaW()">留言板</a></li>
             </ul>
         </div>
         <div class="col-md-2"></div>
     </div>
     <!--从这里开始切换页面-->
     <div class="row" v-show="home">
-        <button onclick="topFunction()" id="myBtn" title="返回顶部"><span class="glyphicon glyphicon-chevron-up"
-                                                                      aria-hidden="true"></span></button>
+        <button onclick="topFunction()" id="myBtn" title="返回顶部">
+            <span class="glyphicon glyphicon-chevron-up"
+                         aria-hidden="true"></span>
+        </button>
         <div class="col-md-1"></div>
         <!--访客功能-->
         <div class="col-md-3">
             <br>
             <div class="panel panel-default">
-
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-md-5 col-xs-4">访客</div>
@@ -241,20 +139,20 @@
                             <div class="col-sm-10 col-xs-10 col-md-11">
                                 <div class="media">
                                     <div class="media-left">
-                                        <!------头像------>
+                                        <!--头像-->
                                         <a :href="user.u_url">
                                             <img class="media-object img-rounded" :src="user.u_url">
                                         </a>
                                     </div>
                                     <div class="media-body">
-                                        <!------昵称------>
+                                        <!--昵称-->
                                         <h4 class="media-heading"><a
                                                 :href="'/room?author='+user.author">{{user.name}}</a></h4>
                                         {{user.l_crt}}
                                     </div>
                                 </div>
                             </div>
-                            <!-------删除动态------>
+                            <!--删除动态-->
                             <div class="col-xs-2 col-md-1" v-if="user.author == usernameid">
                                 <h4><span class="glyphicon glyphicon-trash ic-dela" aria-hidden="true"
                                           :id="'life_'+user.l_id" :data-id="user.l_id" title="删除"
@@ -276,7 +174,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-----------------------------------------点赞评论浏览------------------>
+                        <!--点赞评论浏览-->
                         <div class="row give-height">
                             <div class="col-xs-8 col-md-8">浏览<span :id="'look_l_'+user.l_id">{{user.look_c}}</span>次
                             </div>
@@ -308,7 +206,7 @@
                                 <span :id="'com_c_'+user.l_id">{{user.com_c}}</span>
                             </div>
                         </div>
-                        <!-----------------------------------------一级评论------------------------>
+                        <!--一级评论-->
                         <div class="collapse in" :id="'lc'+user.l_id">
                             <div class="" v-for="comm in comment"
                                  v-if="comm.to_life_id == user.l_id && comm.c_type == 1 && comm.to_col_id == 0">
@@ -316,7 +214,7 @@
                                     <div class="col-md-11 col-xs-10">
                                         <div class="media ">
                                             <div class="media-left">
-                                                <!------评论者头像------>
+                                                <!--评论者头像-->
                                                 <a :href="comm.u_url">
                                                     <img class="media-object img-rounded" :src="comm.u_url"
                                                          alt="">
@@ -344,7 +242,7 @@
                                         </h5>
                                     </div>
                                 </div>
-                                <!-------------------------二级评论------------------------------->
+                                <!--二级评论-->
                                 <div v-for="comme in comment"
                                      v-if="comme.to_col_id == comm.c_id">
                                     <div class="row comment-a">
@@ -582,8 +480,8 @@
                             </div>
                             <div class="col-md-1 col-xs-2" v-if="toLea.user_id == usernameid">
                                 <h5 :data-id="toLea.c_id" :data-c_type="toLea.c_type"
-                                    onclick="delLea(this)"><span
-                                        class="glyphicon glyphicon-trash ic-del" aria-hidden="true"></span>
+                                    onclick="delLea(this)">
+                                    <span class="glyphicon glyphicon-trash ic-del" aria-hidden="true"></span>
                                 </h5>
                             </div>
                         </div>
@@ -610,15 +508,9 @@
         </div>
     </div>
 </div>
-<footer class="modal-footer" style="border-top-width: 0px">
-    <div class="container">
-        <div>Copyright © 2020 · All Rights Reserved Powered By 举个栗子</div>
-        <br>
-    </div>
-</footer>
-<script th:src="@{${urls.getForLookupPath('/bootstrap/jquery.min.js')}}"></script>
-<script th:src="@{${urls.getForLookupPath('/bootstrap/js/bootstrap.min.js')}}"></script>
-<script th:src="@{${urls.getForLookupPath('/mycss/my.js')}}"></script>
+<!--页脚-->
+<footer th:replace="commons::footer"></footer>
+
 <script th:inline="javascript">
     /*<![CDATA[*/
     var username = /*[[${session.sessionUser.username}]]*/;

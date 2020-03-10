@@ -6,91 +6,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>我的消息</title>
-
     <link th:href="@{${urls.getForLookupPath('/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
     <link th:href="@{${urls.getForLookupPath('/mycss/my.css')}}" rel="stylesheet">
     <script th:src="@{${urls.getForLookupPath('/vue.js')}}" type="text/javascript" charset="utf-8"></script>
-
     <style type="text/css">
         body {
-
             /*background-repeat: no-repeat;*/
-
             /*background-position: center center #2D0F0F;*/
-
-            background-color: #f0f0f0;
-
-            background-image: url(/rooms/背景7.jpeg);
-
-            background-size: 100%;
-
             /*background-size: cover;*/
-
+            background-color: #f0f0f0;
+            background-image: url(/rooms/背景7.jpeg);
+            background-size: 100%;
             background-attachment: fixed;
-
         }
-
         a {
             color: grey;
         }
-
     </style>
 </head>
 <body>
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">木禾空间</a>
-        </div>
-
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li th:if="${session.sessionUser != null}"><a href="/"><span class="glyphicon glyphicon-user"
-                                                                             aria-hidden="true"></span> 个人空间</a>
-                </li>
-                <li><a
-                        th:href="'/room?author='+${session.sessionUser.username}"><span class="glyphicon glyphicon-home"
-                                                                                        aria-hidden="true"></span> 我的主页</a>
-                </li>
-                <li th:if="${session.sessionUser != null}"><a href="/friend"><span
-                        class="glyphicon glyphicon-tree-deciduous" aria-hidden="true"></span> 好友</a></li>
-                <li><a href="/publicRoom"><span class="glyphicon glyphicon-leaf" aria-hidden="true"></span> 公共圈</a></li>
-            </ul>
-            <form class="navbar-form navbar-left" action="/search">
-                <div class="form-group">
-                    <input type="text" class="form-control" name="seaText" placeholder="账号、昵称">
-                </div>
-                <button type="submit" class="btn btn-default">查找</button>
-            </form>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="hidden-sm hidden-xs"><a href="/play"><span class="glyphicon glyphicon-ice-lolly-tasted" aria-hidden="true"></span> 娱乐</a></li>
-                <!--消息通知图标-->
-                <li class="active"><a href="/notice">
-                    <span class="glyphicon glyphicon-bell" aria-hidden="true" id="ic_notice"></span>
-                    <span class="badge" id="notice">0</span>
-                </a></li>
-                <li th:if="${session.sessionUser == null}"><a href="/go">登录</a></li>
-                <li class="dropdown" th:if="${session.sessionUser != null}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">[[${session.sessionUser.name}]] <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <!--                        <li role="separator" class="divider"></li>-->
-                        <li><a href="/logout" style="color: #00a1d6"><span class="glyphicon glyphicon-log-out"
-                                                                           aria-hidden="true"></span> 退出登录</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div th:replace="commons::navigation(active='notice')"></div>
 <br><br><br><br>
 <div class="container">
     <div class="row">
@@ -205,12 +140,8 @@
     </div>
 </div>
 
-<footer class="modal-footer" style="border-top-width: 0px">
-    <div class="container">
-        <div>Copyright © 2020 · All Rights Reserved Powered By 举个栗子</div>
-        <br>
-    </div>
-</footer>
+<!--页脚-->
+<footer th:replace="commons::footer"></footer>
 <script th:src="@{${urls.getForLookupPath('/bootstrap/jquery.min.js')}}"></script>
 <script th:src="@{${urls.getForLookupPath('/bootstrap/js/bootstrap.min.js')}}"></script>
 <script th:src="@{${urls.getForLookupPath('/mycss/my.js')}}"></script>
