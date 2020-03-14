@@ -151,7 +151,9 @@
     var username = /*[[${session.sessionUser.username}]]*/;
     /*]]>*/
     var page = 1;
-
+    //消息轮询
+    var timeCount = 0;
+    var interval = setInterval("inqNoticeNotRead()",15000);
     var vm = new Vue({
         el: "#app",
         data: {

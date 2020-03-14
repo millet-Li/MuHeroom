@@ -58,12 +58,16 @@
     var username = /*[[${session.sessionUser.username}]]*/;
     /*]]>*/
     var page = 1;
+
     //页面加载初期，调用顶部个人信息加载函数及查询通知信息
     $(document).ready(function () {
         per_image();
         per_data();
         inqNoticeNotRead();
     });
+    //消息轮询
+    var timeCount = 0;
+    var interval = setInterval("inqNoticeNotRead()",15000);
     // 点击按钮，返回顶部
     function topFunction() {
         document.body.scrollTop = 0;

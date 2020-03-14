@@ -137,6 +137,7 @@ function comment(e) {
 
 //一二级评论回复子函数
 function comment2target(to_user_id, to_life_id, commentId, to_com_id, c_text) {
+
     if (!c_text) {
         alert("不能回复空内容");
         return;
@@ -157,8 +158,10 @@ function comment2target(to_user_id, to_life_id, commentId, to_com_id, c_text) {
             if (response === "true") {
                 //调用函数
                 getNewCom(to_user_id, to_life_id);
-                //清空评论框
+                //清空评论框 关闭评论框
                 $("#input-" + commentId).val('');
+                $('#gly-coa-'+commentId).click();
+                $('#gly-coa-'+commentId).attr("data-sign","a");
                 //改变浏览数、评论数
                 var com_ = $("#com_c_" + to_life_id);
                 var look_ = $("#look_l_" + to_life_id);
@@ -170,7 +173,6 @@ function comment2target(to_user_id, to_life_id, commentId, to_com_id, c_text) {
                 look_.html(look_c);
             } else
                 alert(response);
-
         },
         error: function (msg) {
             alert("请求失败"+msg);
@@ -239,7 +241,7 @@ function newComMeans(e) {
     if (document.getElementById('gly-coa-'+id_a).getAttribute("data-sign") === sid) {
         $('#gly-coa-'+id_a).click();
         //神奇的js，这行代码有没有不影响程序稳健
-         $('#gly-coa-'+id_a).attr("data-sign","a");
+        $('#gly-coa-'+id_a).attr("data-sign","a");
     }else {
         $('#gly-coa-'+id_a).attr("data-sign",sid);
     }
@@ -465,7 +467,6 @@ function setNotic(e) {
         e.removeAttribute("data-s");
         setNotRead(c_id, c_ida, notice, not_val, ic_notice);
     }
-
 }
 
 //设置消息已读
@@ -531,11 +532,10 @@ function setNotRead(c_id, c_ida, notice, not_val, ic_notice) {
 
 //查询未读消息数量
 function inqNoticeNotRead() {
-
+    var that = this;
     // var c_id = e.getAttribute("id");
     var notice = $("#notice");
     var ic_notice = $("#ic_notice");
-
     $.ajax({
         type: "post",
         url: "/inqNotice",
@@ -548,8 +548,13 @@ function inqNoticeNotRead() {
                 notice.html(notNum);
             }
         },
-        error: function (msg) {
-            alert("请求失败");
+        error: function () {
+            that.timeCount++;
+            // alert("查询消息请求失败 "+that.timeCount+" 次");
+            if (that.timeCount == 2) {
+                clearInterval(that.interval);
+                // alert("轮询终止");
+            }
         }
     });
 }

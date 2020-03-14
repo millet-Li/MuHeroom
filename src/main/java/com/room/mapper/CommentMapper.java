@@ -36,9 +36,9 @@ public interface CommentMapper {
     @Update("UPDATE room.comment SET or_read = 0 WHERE c_id = #{c_id}")
     void setNoticeNotRead(int c_id);
 
-    @Select("SELECT * FROM room.comment where to_user_id = #{to_user_id} " +
-            "and or_read = 0 and comment.user_id != #{to_user_id} order by c_id desc limit 14")
-    List<Comment> getNoticeNotRead(String to_user_id);
+    @Select("SELECT count(*) FROM room.comment where to_user_id = #{to_user_id} " +
+            "and or_read = 0 and comment.user_id != #{to_user_id} ")
+    int getNoticeNotRead(String to_user_id);
 
     @Insert("insert into comment (user_id,to_user_id,c_type,to_life_id) values (#{user_id},#{to_user_id},#{c_type},#{to_life_id})")
     void pointLike(Comment comment);

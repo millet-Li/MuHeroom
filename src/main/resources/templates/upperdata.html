@@ -151,6 +151,9 @@
         per_data();
         inqNoticeNotRead();
     });
+    //消息轮询
+    var timeCount = 0;
+    var interval = setInterval("inqNoticeNotRead()",15000);
     //preview img ： filereader方式
     // document.getElementById('imgFile').onchange = function (e) {
     //     var ele = document.getElementById('imgFile').files[0];

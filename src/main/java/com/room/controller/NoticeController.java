@@ -60,11 +60,9 @@ public class NoticeController {
     @ResponseBody
     @RequestMapping("/inqNotice")
     public int inqNotice(@RequestParam("to_user_id") String to_user_id) {
-        List<Comment> noticeNotReadNum = commentMapper.getNoticeNotRead(to_user_id);
-        int num = noticeNotReadNum.size();
+        int noticeNotReadNum = commentMapper.getNoticeNotRead(to_user_id);
 //        System.out.println(num);
-
-        return num;
+        return noticeNotReadNum;
 
     }
 }

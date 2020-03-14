@@ -26,6 +26,9 @@
     $(document).ready(function () {
         inqNoticeNotRead();
     });
+    //消息轮询
+    var timeCount = 0;
+    var interval = setInterval("inqNoticeNotRead()",15000);
 </script>
 </body>
 </html>

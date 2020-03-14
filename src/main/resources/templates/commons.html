@@ -53,17 +53,13 @@
                 <li th:class="${active=='index'?'active':''}"
                     th:if="${session.sessionUser != null}">
                     <a href="/" th:style="${active=='index'?'color: #00a1d6':''}">
-                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                        个人空间
-                    </a>
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 个人空间</a>
                 </li>
                 <li th:if="${session.sessionUser != null}"
-                    th:class="${active=='myRoom'?'active':''}">
+                    th:class="${active=='myRoom' ? (session.sessionUser.username == author ? 'active' :'' ) : ''}">
                     <a th:href="'/room?author='+${session.sessionUser.username}"
-                       th:style="${active=='myRoom'?'color: #00a1d6':''}">
-                        <span class="glyphicon glyphicon-home"></span>
-                        我的主页
-                    </a>
+                       th:style="${active=='myRoom'? (session.sessionUser.username == author?'color: #00a1d6':'') :''}">
+                        <span class="glyphicon glyphicon-home"></span> 我的主页</a>
                 </li>
                 <li th:if="${session.sessionUser != null}"
                     th:class="${active=='friend'?'active':''}">
@@ -87,8 +83,7 @@
                 <li th:class="${active=='play'?'active':'hidden-sm hidden-xs'}">
                     <a href="/play" th:style="${active=='play'?'color: #00a1d6':''}">
                         <span class="glyphicon glyphicon-ice-lolly-tasted"
-                              aria-hidden="true"></span> 娱乐
-                    </a>
+                              aria-hidden="true"></span> 娱乐</a>
                 </li>
                 <li th:class="${active=='notice'?'active':''}">
                     <a href="/notice" th:style="${active=='notice'?'color: #00a1d6':''}">
@@ -96,7 +91,7 @@
                         <span class="badge" id="notice">0</span>
                     </a>
                 </li>
-                <li th:if="${session.sessionUser == null}"><a href="/go">登录</a></li>
+                <li th:if="${session.sessionUser == null}"><a href="/go"> 登录</a></li>
                 <li class="dropdown" th:if="${session.sessionUser != null}">
                     <a class="dropdown-toggle" data-toggle="dropdown"
                        role="button" aria-haspopup="true"

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>主页</title>
+    <title>我的主页</title>
     <head th:insert="~{commons::head}"></head>
 </head>
 <body>
@@ -228,7 +228,7 @@
                                                                             data-toggle="collapse"
                                                                             :href="'#'+comm.c_id"
                                                                             onclick="glyComment(this)"
-                                                                            :id="'gly-co-'+comm.c_id"
+                                                                            :id="'gly-coa-'+comm.c_id"
                                                                             aria-expanded="false"
                                                                             aria-controls="collapseExample"></span>
                                             </div>
@@ -265,7 +265,7 @@
                                                         data-toggle="collapse"
                                                         :href="'#'+comme.c_id"
                                                         onclick="glyComment(this)"
-                                                        :id="'gly-co-'+comme.c_id"
+                                                        :id="'gly-coa-'+comme.c_id"
                                                         aria-expanded="false"
                                                         aria-controls="collapseExample"></span>
                                                 </div>
@@ -518,12 +518,14 @@
     /*]]>*/
     var page = 1;
     var visPage = 1;
-
     $(document).ready(function () {
         per_image();
         per_data();
         inqNoticeNotRead();
     });
+    //消息轮询
+    var timeCount = 0;
+    var interval = setInterval("inqNoticeNotRead()",15000);
 
     function topFunction() {
         document.body.scrollTop = 0;
@@ -543,6 +545,9 @@
                 $("#name").html(obja.name);
                 $("#i").html(obja.name);
                 $("#j").html(obja.create_time);
+                if(username != author){
+                    document.title = obja.name + "的空间";
+                }
             },
             error: function (msg) {
                 alert(msg);
